@@ -1,2 +1,5 @@
-# umbraco-minions
-Prototyping a new property editor
+# Umbraco Minions
+
+Prototyping a new property editor... curious?
+
+![Minions](docs/assets/img/minions.png)
