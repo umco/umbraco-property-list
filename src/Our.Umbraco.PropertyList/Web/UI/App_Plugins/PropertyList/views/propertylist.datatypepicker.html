@@ -1,0 +1,43 @@
+﻿<div class="content-type-editor-dialog edit-property-settings" ng-controller="Our.Umbraco.PropertyList.Controllers.DataTypePickerController as vm">
+
+    <div class="editor-wrapper umb-control-group control-group" ng-model="model.property.editor" xval-require-component>
+
+        <a href="" ng-if="!model.property.editor" class="editor-placeholder" hotkey="alt+shift+e" ng-click="vm.openEditorPickerOverlay(model.property)">
+            <localize key="shortcuts_addEditor"></localize>
+        </a>
+
+        <div class="editor clearfix" ng-if="model.property.editor">
+
+            <a href="" class="editor-icon-wrapper" ng-click="vm.openEditorPickerOverlay(model.property)">
+                <i class="icon {{ model.property.dataTypeIcon }}" ng-class="{'icon-autofill': model.property.dataTypeIcon == null}"></i>
+            </a>
+
+            <div class="editor-details">
+                <a href="" class="editor-name" ng-click="vm.openEditorPickerOverlay(model.property)">{{ model.property.dataTypeName }}</a>
+                <a href="" class="editor-editor" ng-click="vm.openEditorPickerOverlay(model.property)">{{ model.property.editor }}</a>
+            </div>
+
+            <a href="" class="editor-settings-icon pull-right"
+               ng-click="vm.openEditorSettingsOverlay(model.property)"
+               hotkey="alt+shift+d"
+               ng-if="model.property.editor">
+                <i class="icon icon-settings"></i>
+            </a>
+
+        </div>
+
+    </div>
+
+    <umb-overlay ng-if="vm.editorPickerOverlay.show"
+                 model="vm.editorPickerOverlay"
+                 position="right"
+                 view="vm.editorPickerOverlay.view">
+    </umb-overlay>
+
+    <umb-overlay ng-if="vm.editorSettingsOverlay.show"
+                 model="vm.editorSettingsOverlay"
+                 position="right"
+                 view="vm.editorSettingsOverlay.view">
+    </umb-overlay>
+
+</div>

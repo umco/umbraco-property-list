@@ -1,0 +1,40 @@
+{
+    propertyEditors: [
+        {
+            alias: "Our.Umbraco.PropertyList",
+            name: "Property List",
+            editor: {
+                view: "~/App_Plugins/PropertyList/views/propertylist.html",
+                valueType: "JSON"
+            },
+            prevalues:{
+                fields: [
+                    {
+                        label: "Data Type",
+                        description: "Select a data type",
+                        key: "dataType",
+                        view: "~/App_Plugins/PropertyList/views/propertylist.datatypepicker.html"
+                    },
+                    {
+                        label: "Minimum Items",
+                        description: "Select the minimum number of items",
+                        key: "minItems",
+                        view: "number"
+                    },
+                    {
+                        label: "Maximum Items",
+                        description: "Select the maximum number of items",
+                        key: "maxItems",
+                        view: "number"
+                    }
+                ]
+            }
+        }
+    ],
+    javascript: [
+        '~/App_Plugins/PropertyList/js/propertylist.controllers.js'
+    ],
+    css: [
+        '~/App_Plugins/PropertyList/css/propertylist.css'
+    ]
+}

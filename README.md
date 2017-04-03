@@ -1,10 +1,8 @@
-﻿# Repeatable DataType
+﻿# Property List
 
 A repeatable list (of selected datatype) for Umbraco.
 
 ## TODO
-
-- [ ] Come up with a better name for the package
 
 - [ ] Pre Value Editor
 	- [ ] Prevalues
