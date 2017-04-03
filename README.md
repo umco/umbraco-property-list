@@ -4,37 +4,35 @@ A repeatable list (of selected datatype) for Umbraco.
 
 ## TODO
 
-- [ ] Pre Value Editor
-	- [ ] Prevalues
-		- [ ] DataType Picker
-			- [ ] Only save the ID
-		- [ ] Minimum/maximum items
+- [x] Pre Value Editor
+	- [x] Prevalues
+		- [x] DataType Picker
+			- [x] Only save the ID
+		- [x] Minimum/maximum items
 		- **Ideas**
 			- [ ] Hide label?
 			- [ ] Disable sorting?
 
 - [ ] Value Editor
-	- [ ] ContentType preview
-	- [ ] HTML view
-		- [ ] Check if we can we reuse any Umbraco directives?
-		- [ ] Check if any UMCO projects are useful for reuse?
-	- [ ] CSS
+	- [x] ContentType preview
+	- [x] HTML view
+		- [x] Check if we can we reuse any Umbraco directives?
+		- [x] Check if any UMCO projects are useful for reuse?
+	- [x] CSS
 	- [ ] Angular / JS
-		- [ ] Prepare the value-editor
-			- [ ] Get the DataType by ID; then get...
-				- [ ] config/prevalues
-				- [ ] view-path
-				- [ ] property alias
-			- [ ] Initialize the list values
-			- [ ] Set the list values
-		- [ ] Render the DataType/property-editor
-			- [ ] Repeatable
-			- [ ] Addable
-			- [ ] Removeable
-			- [ ] Sortable
-		- [ ] Saving the values
-	- [ ] C#
-		- [ ] Saving the values
+		- [x] Prepare the value-editor
+			- [x] Get the DataType by ID; then get...
+				- [x] config/prevalues
+				- [x] view-path
+				- [x] property alias
+			- [x] Initialize the list values
+			- [x] Set the list values
+		- [x] Render the DataType/property-editor
+			- [x] Repeatable
+			- [x] Addable
+			- [x] Removeable
+			- [x] Sortable
+		- [x] Saving the values
 			- [ ] PropertyValueEditor
 				- [ ] ConvertDbToString
 				- [ ] ConvertDbToEditor
