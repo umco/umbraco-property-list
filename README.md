@@ -8,9 +8,10 @@ A repeatable list (of selected datatype) for Umbraco.
 	- [x] Prevalues
 		- [x] DataType Picker
 			- [x] Only save the ID
-		- [x] Minimum/maximum items
+		- [x] Minimum items
+		- [x] Maximum items
+		- [x] Hide label
 		- **Ideas**
-			- [ ] Hide label?
 			- [ ] Disable sorting?
 
 - [ ] Value Editor
@@ -27,13 +28,14 @@ A repeatable list (of selected datatype) for Umbraco.
 				- [x] property alias
 			- [x] Initialize the list values
 			- [x] Set the list values
+			- [ ] Set the IsDirty flag
 		- [x] Render the DataType/property-editor
 			- [x] Repeatable
 			- [x] Addable
 			- [x] Removeable
 			- [x] Sortable
 		- [x] Saving the values
-			- [ ] PropertyValueEditor
+			- [x] PropertyValueEditor
 				- [ ] ConvertDbToString
 				- [ ] ConvertDbToEditor
 				- [ ] ConvertEditorToDb
