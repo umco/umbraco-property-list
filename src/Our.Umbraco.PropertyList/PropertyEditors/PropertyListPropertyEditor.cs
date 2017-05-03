@@ -7,7 +7,10 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using ClientDependency.Core;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Our.Umbraco.PropertyList.Models;
 using Umbraco.Core;
+using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Core.Models.Editors;
 using Umbraco.Core.PropertyEditors;
@@ -22,10 +25,11 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
         "JSON",
         "/App_Plugins/PropertyList/Views/propertylist.html",
         Group = "Lists",
-        Icon = "",
+        Icon = "icon-bulleted-list",
         IsParameterEditor = false)]
     [PropertyEditorAsset(ClientDependencyType.Css, "~/App_Plugins/PropertyList/css/propertylist.css")]
     [PropertyEditorAsset(ClientDependencyType.Javascript, "~/App_Plugins/PropertyList/js/propertylist.controllers.js")]
+    [PropertyEditorAsset(ClientDependencyType.Javascript, "~/App_Plugins/PropertyList/js/propertylist.resources.js")]
     public class PropertyListPropertyEditor : PropertyEditor
     {
         public const string PropertyEditorAlias = "Our.Umbraco.PropertyList";
@@ -41,7 +45,7 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
         {
             _defaultPreValues = new Dictionary<string, object>
             {
-                { "dataType", "-88" },
+                { "dataType", "0cc0eba1-9960-42c9-bf9b-60e150b429ae" }, // Guid for default Textstring
                 { "minItems", 0 },
                 { "maxItems", 0 }
             };
@@ -72,6 +76,7 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
         #endregion
 
         #region Value Editor
+
         protected override PropertyValueEditor CreateValueEditor()
         {
             return new PropertyListPropertyValueEditor(base.CreateValueEditor());
@@ -101,21 +106,157 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
 
             public override object ConvertDbToEditor(Property property, PropertyType propertyType, IDataTypeService dataTypeService)
             {
-                return base.ConvertDbToEditor(property, propertyType, dataTypeService);
+                if (property.Value == null || string.IsNullOrWhiteSpace(property.Value.ToString()))
+                    return string.Empty;
+
+                var model = JsonConvert.DeserializeObject<PropertyListValue>(property.Value.ToString());
+                if (model == null || model.DataTypeGuid.Equals(Guid.Empty) || model.Values == null)
+                    return string.Empty;
+
+                // Get the associated datatype definition
+                var dtd = dataTypeService.GetDataTypeDefinitionById(model.DataTypeGuid);
+
+                // Something weird is happening in core whereby ConvertDbToString is getting
+                // called loads of times on publish, forcing the property value to get converted
+                // again, which in tern screws up the values. To get round it, we create a
+                // dummy property copying the original properties value, this way not overwriting
+                // the original property value allowing it to be re-converted again later.
+                //
+                // NB: Credit to Vorto for noticing this issue.
+                // https://github.com/umco/umbraco-vorto/blob/master/src/Our.Umbraco.Vorto/Web/PropertyEditors/VortoPropertyEditor.cs
+                var prop2 = new Property(propertyType, property.Value);
+
+                // Lookup the property editor
+                var propEditor = PropertyEditorResolver.Current.GetByAlias(dtd.PropertyEditorAlias);
+                var propType = new PropertyType(dtd);
+
+                for (var i = 0; i < model.Values.Count; i++)
+                {
+                    var obj = model.Values[i];
+
+                    var prop = new Property(propType, obj == null ? null : obj.ToString());
+                    var newValue = propEditor.ValueEditor.ConvertDbToEditor(prop, propType, dataTypeService);
+                    model.Values[i] = (newValue == null) ? null : JToken.FromObject(newValue);
+                }
+
+                prop2.Value = JsonConvert.SerializeObject(model);
+
+                return base.ConvertDbToEditor(prop2, propertyType, dataTypeService);
             }
 
             public override string ConvertDbToString(Property property, PropertyType propertyType, IDataTypeService dataTypeService)
             {
-                return base.ConvertDbToString(property, propertyType, dataTypeService);
+                if (property.Value == null || property.Value.ToString().IsNullOrWhiteSpace())
+                    return string.Empty;
+
+                // Something weird is happening in core whereby ConvertDbToString is getting
+                // called loads of times on publish, forcing the property value to get converted
+                // again, which in tern screws up the values. To get round it, we create a
+                // dummy property copying the original properties value, this way not overwriting
+                // the original property value allowing it to be re-converted again later.
+                //
+                // NB: Credit to Vorto for noticing this issue.
+                // https://github.com/umco/umbraco-vorto/blob/master/src/Our.Umbraco.Vorto/Web/PropertyEditors/VortoPropertyEditor.cs
+                var prop2 = new Property(propertyType, property.Value);
+
+                try
+                {
+                    var model = JsonConvert.DeserializeObject<PropertyListValue>(property.Value.ToString());
+                    if (model != null && !model.DataTypeGuid.Equals(Guid.Empty) && model.Values != null)
+                    {
+                        var dtd = dataTypeService.GetDataTypeDefinitionById(model.DataTypeGuid);
+                        var propEditor = PropertyEditorResolver.Current.GetByAlias(dtd.PropertyEditorAlias);
+                        var propType = new PropertyType(dtd);
+
+                        for (var i = 0; i < model.Values.Count; i++)
+                        {
+                            var obj = model.Values[i];
+
+                            var prop = new Property(propType, obj == null ? null : obj.ToString());
+                            var newValue = propEditor.ValueEditor.ConvertDbToString(prop, propType, dataTypeService);
+                            model.Values[i] = newValue;
+                        }
+
+                        prop2.Value = JsonConvert.SerializeObject(model);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogHelper.Error<PropertyListPropertyValueEditor>("Error converting DB value to String", ex);
+                }
+
+                return base.ConvertDbToString(prop2, propertyType, dataTypeService);
             }
 
             public override XNode ConvertDbToXml(Property property, PropertyType propertyType, IDataTypeService dataTypeService)
             {
+                if (property.Value != null && !string.IsNullOrWhiteSpace(property.Value.ToString()))
+                {
+                    try
+                    {
+                        var model = JsonConvert.DeserializeObject<PropertyListValue>(property.Value.ToString());
+                        if (model != null && !model.DataTypeGuid.Equals(Guid.Empty) && model.Values != null)
+                        {
+                            var dtd = dataTypeService.GetDataTypeDefinitionById(model.DataTypeGuid);
+                            var propEditor = PropertyEditorResolver.Current.GetByAlias(dtd.PropertyEditorAlias);
+                            var propType = new PropertyType(dtd);
+
+                            for (var i = 0; i < model.Values.Count; i++)
+                            {
+                                var obj = model.Values[i];
+
+                                var prop = new Property(propType, obj == null ? null : obj.ToString());
+                                var newValue = propEditor.ValueEditor.ConvertDbToXml(prop, propType, dataTypeService);
+                                model.Values[i] = newValue;
+                            }
+
+                            return new XElement("values",
+                                new XAttribute("dtd", model.DataTypeGuid),
+                                model.Values.Select(x => new XElement("value", x)));
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        LogHelper.Error<PropertyListPropertyValueEditor>("Error converting DB value to String", ex);
+                    }
+                }
+
                 return base.ConvertDbToXml(property, propertyType, dataTypeService);
             }
 
             public override object ConvertEditorToDb(ContentPropertyData editorValue, object currentValue)
             {
+                if (editorValue.Value == null || string.IsNullOrWhiteSpace(editorValue.Value.ToString()))
+                    return string.Empty;
+
+                try
+                {
+                    var model = JsonConvert.DeserializeObject<PropertyListValue>(editorValue.Value.ToString());
+                    if (model.Values != null)
+                    {
+                        var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
+
+                        var dtd = dataTypeService.GetDataTypeDefinitionById(model.DataTypeGuid);
+                        var preValues = dataTypeService.GetPreValuesCollectionByDataTypeId(dtd.Id);
+                        var propEditor = PropertyEditorResolver.Current.GetByAlias(dtd.PropertyEditorAlias);
+
+                        for (var i = 0; i < model.Values.Count; i++)
+                        {
+                            var obj = model.Values[i];
+
+                            var propData = new ContentPropertyData(obj, preValues, new Dictionary<string, object>());
+                            var newValue = propEditor.ValueEditor.ConvertEditorToDb(propData, obj);
+                            model.Values[i] = (newValue == null) ? null : JToken.FromObject(newValue);
+                        }
+                    }
+
+                    return JsonConvert.SerializeObject(model);
+                }
+                catch (Exception ex)
+                {
+                    LogHelper.Error<PropertyListPropertyValueEditor>("Error converting DB value to Editor", ex);
+                }
+
                 return base.ConvertEditorToDb(editorValue, currentValue);
             }
         }
