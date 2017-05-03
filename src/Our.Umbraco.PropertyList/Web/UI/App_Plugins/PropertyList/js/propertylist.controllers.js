@@ -1,13 +1,17 @@
-﻿angular.module("umbraco").controller("Our.Umbraco.PropertyList.Controllers.RepeatableDataTypeController",
-    function ($scope, contentTypeResource, umbPropEditorHelper) {
+﻿angular.module("umbraco").controller("Our.Umbraco.PropertyList.Controllers.PropertyListController", [
+    "$scope",
+    "contentTypeResource",
+    "Our.Umbraco.PropertyList.Resources.PropertyListResources",
+    "umbPropEditorHelper",
+    function ($scope, contentTypeResource, propertyListResource, umbPropEditorHelper) {
 
         //console.debug("pl", $scope.model.config.dataType, $scope.model.value);
 
-       var dataTypeId = $scope.model.config.dataType;
-       var minItems = $scope.model.config.minItems || 0;
-       var maxItems = $scope.model.config.maxItems || 0;
+        var dataTypeGuid = $scope.model.config.dataType;
+        var minItems = $scope.model.config.minItems || 0;
+        var maxItems = $scope.model.config.maxItems || 0;
 
-        $scope.isConfigured = dataTypeId != null;
+        $scope.isConfigured = dataTypeGuid != null;
 
         if ($scope.isConfigured) {
 
@@ -15,13 +19,13 @@
                 $scope.model.value = undefined;
 
             $scope.model.value = $scope.model.value || {
-                dtdId: dataTypeId,
+                dtd: dataTypeGuid,
                 values: []
             };
 
             $scope.prompts = {};
 
-            contentTypeResource.getPropertyTypeScaffold(dataTypeId).then(function (propertyType) {
+            propertyListResource.getPropertyTypeScaffoldByKey(dataTypeGuid).then(function (propertyType) {
 
                 $scope.propertyType = propertyType;
 
@@ -76,10 +80,12 @@
             };
 
             $scope.model.controls.splice(idx, 0, control);
+            $scope.setDirty();
         }
 
         $scope.deleteContent = function (evt, idx) {
             $scope.model.controls.splice(idx, 1);
+            $scope.setDirty();
         }
 
         $scope.sortableOptions = {
@@ -92,11 +98,15 @@
             cursorAt: {
                 top: 0
             },
-            //update: function (e, ui) {
-            //    _.each($scope.model.controls, function (itm, idx) {
-            //        console.debug("sorted", itm, idx)
-            //    });
-            //}
+            update: function (e, ui) {
+                $scope.setDirty();
+            }
+        };
+
+        $scope.setDirty = function () {
+            if ($scope.propertyForm) {
+                $scope.propertyForm.$setDirty();
+            }
         };
 
         var unsubscribe = $scope.$on("formSubmitting", function (ev, args) {
@@ -106,32 +116,38 @@
                 tmpValues[idx] = control.value;
             });
 
-            $scope.model.value.values = !_.isEmpty(tmpValues) ? tmpValues : [];
-            $scope.model.value.dtdId = dataTypeId;
+            $scope.model.value = {
+                dtd: dataTypeGuid,
+                values: !_.isEmpty(tmpValues) ? tmpValues : []
+            };
         });
 
         $scope.$on('$destroy', function () {
             unsubscribe();
         });
 
-    });
+    }]);
 
-angular.module("umbraco").controller("Our.Umbraco.PropertyList.Controllers.DataTypePickerController",
-    function ($scope, contentTypeResource, dataTypeResource, dataTypeHelper) {
+angular.module("umbraco").controller("Our.Umbraco.PropertyList.Controllers.DataTypePickerController", [
+    "$scope",
+    "contentTypeResource",
+    "dataTypeHelper",
+    "dataTypeResource",
+    "entityResource",
+    "Our.Umbraco.PropertyList.Resources.PropertyListResources",
+    function ($scope, contentTypeResource, dataTypeHelper, dataTypeResource, entityResource, propertyListResource) {
 
         if (!$scope.model.property) {
 
             $scope.model.property = {};
 
             if ($scope.model.value) {
-                dataTypeResource.getById($scope.model.value).then(function (dataType) {
-
+                propertyListResource.getDataTypeByKey($scope.model.value).then(function (dataType) {
                     // update editor
                     $scope.model.property.editor = dataType.selectedEditor;
                     $scope.model.property.dataTypeId = dataType.id;
                     $scope.model.property.dataTypeIcon = dataType.icon;
                     $scope.model.property.dataTypeName = dataType.name;
-
                 });
             }
         }
@@ -141,8 +157,10 @@ angular.module("umbraco").controller("Our.Umbraco.PropertyList.Controllers.DataT
         vm.openEditorPickerOverlay = openEditorPickerOverlay;
         vm.openEditorSettingsOverlay = openEditorSettingsOverlay;
 
-        function setDataTypeId(dataTypeId) {
-            $scope.model.value = dataTypeId;
+        function setModelValue(dataTypeId) {
+            entityResource.getById(dataTypeId, "DataType").then(function (entity) {
+                $scope.model.value = entity.key;
+            });
         };
 
         function openEditorPickerOverlay(property) {
@@ -154,7 +172,7 @@ angular.module("umbraco").controller("Our.Umbraco.PropertyList.Controllers.DataT
 
             vm.editorPickerOverlay.submit = function (model) {
 
-                setDataTypeId(model.property.dataTypeId);
+                setModelValue(model.property.dataTypeId);
 
                 vm.editorPickerOverlay.show = false;
                 vm.editorPickerOverlay = null;
@@ -186,7 +204,7 @@ angular.module("umbraco").controller("Our.Umbraco.PropertyList.Controllers.DataT
 
                         contentTypeResource.getPropertyTypeScaffold(newDataType.id).then(function (propertyType) {
 
-                            setDataTypeId(newDataType.id);
+                            setModelValue(newDataType.id);
 
                             // update editor
                             property.config = propertyType.config;
@@ -214,5 +232,4 @@ angular.module("umbraco").controller("Our.Umbraco.PropertyList.Controllers.DataT
 
         }
 
-    });
-
+    }]);
