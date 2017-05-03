@@ -20,7 +20,7 @@ A repeatable list (of selected datatype) for Umbraco.
 		- [x] Check if we can we reuse any Umbraco directives?
 		- [x] Check if any UMCO projects are useful for reuse?
 	- [x] CSS
-	- [ ] Angular / JS
+	- [x] Angular / JS
 		- [x] Prepare the value-editor
 			- [x] Get the DataType by ID; then get...
 				- [x] config/prevalues
@@ -28,7 +28,7 @@ A repeatable list (of selected datatype) for Umbraco.
 				- [x] property alias
 			- [x] Initialize the list values
 			- [x] Set the list values
-			- [ ] Set the IsDirty flag
+			- [x] Set the IsDirty flag
 		- [x] Render the DataType/property-editor
 			- [x] Repeatable
 			- [x] Addable
@@ -36,15 +36,15 @@ A repeatable list (of selected datatype) for Umbraco.
 			- [x] Sortable
 		- [x] Saving the values
 			- [x] PropertyValueEditor
-				- [ ] ConvertDbToString
-				- [ ] ConvertDbToEditor
-				- [ ] ConvertEditorToDb
+				- [x] ConvertDbToString
+				- [x] ConvertDbToEditor
+				- [x] ConvertEditorToDb
 	- [ ] Browser testing (Chrome, Firefox, IE/Edge)
 	
-- [ ] PropertyValueConverter
-	- [ ] Get target DataType definition
-	- [ ] Create dummy PropertyType (in order to run the target property-editor's value-converter)
-	- [ ] Return as IEnumerable of that type
+- [x] PropertyValueConverter
+	- [x] Get target DataType definition
+	- [x] Create dummy PropertyType (in order to run the target property-editor's value-converter)
+	- [x] Return as IEnumerable of that type
 	- [ ] Investigate ModelsBuilder support - think it's to provide the return type
 
 - [ ] Packaging
@@ -55,8 +55,7 @@ A repeatable list (of selected datatype) for Umbraco.
 
 - [ ] Courier data-resolver
 	- [ ] Pre Value Editor
-		- [ ] Convert the DataType ID to the GUID
+		- [ ] Add DataType dependency
 	- [ ] Value Editor
-		- [ ] Convert the DataType ID to the GUID
 		- [ ] Processing all list item DataTypes
 
