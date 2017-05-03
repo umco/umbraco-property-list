@@ -2,61 +2,55 @@
     RIPETO
 ==============*/
 
-.rdt__editor {
+.pl__editor {
     position: relative;
 }
 
-.rdt__wrapper
-{
+.pl__wrapper {
     margin-right: 12px;
 }
 
-.rdt__property-item
-{
+.pl__property-item {
     position: relative;
     display: block;
     margin: 0;
     z-index: 10;
 }
 
-.rdt__property-wrapper {
+.pl__property-wrapper {
     position: relative;
-    background-color: #f8f8f8;
-    border: 1px solid #d9d9d9;
+    background-color: #f3f3f5;
+    border: 1px solid #b3afbd;
     padding: 10px 7px;
 }
 
-.rdt__property-wrapper > .icon {
+.pl__property-wrapper > .icon {
     float: left;
     margin-top: 5px;
     font-size: 18px;
+    color: #b3afbd;
 }
 
-.rdt__property-wrapper > .umb-property-editor {
+.pl__property-wrapper > .umb-property-editor {
     margin: auto 25px;
 }
 
-.rdt__buttons
-{
+.pl__buttons {
     position: absolute;
     right: -12px;
     top: -5px;
-
-    background-color: #2e8aea;
+    background-color: #675e7a;
     color: white;
     opacity: 0;
-
     transition: opacity .25s ease-in-out;
     -moz-transition: opacity .25s ease-in-out;
     -webkit-transition: opacity .25s ease-in-out;
-
     -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
     -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
     box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
 }
 
-.rdt__buttons:after
-{
+.pl__buttons:after {
     position: absolute;
     bottom: -12px;
     right: 0;
@@ -65,49 +59,43 @@
     height: 0;
     border-style: solid;
     border-width: 12px 12px 0 0;
-    border-color: #1960ab transparent transparent transparent;
+    border-color: #2e2246 transparent transparent transparent;
 }
 
-.rdt__buttons .umb_confirm-action__overlay 
-{
+.pl__buttons .umb_confirm-action__overlay {
     position: relative;
     display: inline-block;
     left: 0;
     z-index: 5;
 }
 
-.rdt__buttons .umb_confirm-action__overlay-action 
-{
+.pl__buttons .umb_confirm-action__overlay-action {
     margin: 0 !important;
-    background-color: #2e8aea;
-
+    background-color: #675e7a;
     -webkit-border-radius: 0;
     -moz-border-radius: 0;
     border-radius: 0;
-
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none;
     z-index: 5;
 }
 
-.rdt__property-wrapper:hover .rdt__buttons,
-.rdt__buttons:hover
-{
+.pl__property-wrapper:hover .pl__buttons,
+.pl__buttons:hover {
     opacity: 1;
 }
 
-.rdt__button {
+.pl__button {
     position: relative;
     z-index: 10;
 }
 
-.rdt__button,
-.rdt__add-button,
-.rdt__buttons .umb_confirm-action__overlay-action
-{
+.pl__button,
+.pl__add-button,
+.pl__buttons .umb_confirm-action__overlay-action {
     display: inline-block;
-    background-color: #2e8aea;
+    background-color: #675e7a;
     color: white !important;
     font-size: 20px;
     text-decoration: none !important;
@@ -118,120 +106,89 @@
     cursor: pointer;
 }
 
-.rdt__button:hover,
-.rdt__add-button:hover,
-.rdt__buttons .umb_confirm-action__overlay-action.-cancel:hover,
-.rdt__buttons .umb_confirm-action__overlay-action.-confirm:hover
-{
+.pl__button:hover,
+.pl__add-button:hover,
+.pl__buttons .umb_confirm-action__overlay-action.-cancel:hover,
+.pl__buttons .umb_confirm-action__overlay-action.-confirm:hover {
     color: white !important;
     text-decoration: none !important;
 }
 
-.rdt__buttons .umb_confirm-action__overlay-action.-confirm:hover {
-    background-color: #2ecc71;
+.pl__buttons .umb_confirm-action__overlay-action.-confirm:hover {
+    background-color: #35c786;
 }
 
-.rdt__buttons .umb_confirm-action__overlay-action.-cancel:hover {
-    background-color: #e74c3c;
+.pl__buttons .umb_confirm-action__overlay-action.-cancel:hover {
+    background-color: #fe6561;
 }
 
-.rdt__add-button
-{
+.pl__add-button {
     -webkit-border-radius: 2px;
     -moz-border-radius: 2px;
     border-radius: 2px;
     z-index: 20;
 }
 
-.rdt__add-bar 
-{
+.pl__add-bar {
     position: relative;
     height: 10px;
     z-index: 15;
 }
 
-.rdt__add-bar .rdt__add-button
-{
+.pl__add-bar .pl__add-button {
     position: absolute;
     left: 50%;
     top: 50%;
     margin: -15px 0 0 -15px;
     opacity: 0;
-
     transition: opacity .0s ease-in-out;
     -moz-transition: opacity .0s ease-in-out;
     -webkit-transition: opacity .0s ease-in-out;
-
     -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
     -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
     box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
 }
 
-.rdt__add-bar:hover 
-{
+.pl__add-bar:hover {
     margin: -10px 0;
     height: 30px;
 }
 
-.rdt__item:first-child .rdt__add-bar--top:hover 
-{
+.pl__item:first-child .pl__add-bar--top:hover {
     margin: 0 0 -10px;
     height: 20px;
 }
 
-.rdt__add-bar:hover .rdt__add-button
-{
+.pl__add-bar:hover .pl__add-button {
     opacity: 1;
-
     transition-duration: .25s;
     -moz-transition-duration: .25s;
     -webkit-transition-duration: .25s;
-
     -webkit-transition-delay: .05s;
     -moz-transition-delay: .05s;
     transition-delay: .05s;
 }
 
-.rdt__item.ui-sortable-placeholder 
-{
+.pl__item.ui-sortable-placeholder {
     top: 5px;
     height: 2px !important;
     visibility: visible !important;
-    background-color: #2e8aea;
+    background-color: #675e7a;
 }
 
-.rdt__sortable-helper {
+.pl__sortable-helper {
     overflow: visible;
-    background-color: rgba(46,138,234,0.1);
+    background-color: rgba(103, 94, 122, 0.1);
 }
 
-.rdt__sortable-helper > div
-{
-    font-size: 20px;
-    position: absolute;
-    top: 10px;
-    left: 50%;
-
-    width: 40px;
-    height: 40px;
-    line-height: 40px;
-    text-align: center;
-    background-color: #2e8aea;
-    color: white;
-
-    margin: 0 0 0 -20px;
-
-    -webkit-border-radius: 2px;
-    -moz-border-radius: 2px;
-    border-radius: 2px;
-
-    -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
-    -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
-    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
+.pl__sortable-helper > div {
+    font-size: 18px;
+    margin-top: 15px;
+    margin-left: 7px;
+    color: #675e7a;
 }
 
-.no-overflow {
+.pl__buttons .no-overflow {
     max-width: 100%;
     overflow: hidden;
 }
-

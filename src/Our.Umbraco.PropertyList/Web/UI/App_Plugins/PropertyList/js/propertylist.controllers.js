@@ -1,7 +1,7 @@
 ﻿angular.module("umbraco").controller("Our.Umbraco.PropertyList.Controllers.RepeatableDataTypeController",
     function ($scope, contentTypeResource, umbPropEditorHelper) {
 
-        //console.debug("rdt", $scope.model.config.dataType, $scope.model.value);
+        //console.debug("pl", $scope.model.config.dataType, $scope.model.value);
 
        var dataTypeId = $scope.model.config.dataType;
        var minItems = $scope.model.config.minItems || 0;
@@ -85,9 +85,9 @@
         $scope.sortableOptions = {
             axis: 'y',
             cursor: "move",
-            handle: ".rdt__property-wrapper",
+            handle: ".pl__property-wrapper",
             helper: function () {
-                return $('<div class=\"rdt__sortable-helper\"><div><i class=\"icon icon-navigation\"></i></div></div>');
+                return $('<div class=\"pl__sortable-helper\"><div><i class=\"icon icon-navigation\"></i></div></div>');
             },
             cursorAt: {
                 top: 0

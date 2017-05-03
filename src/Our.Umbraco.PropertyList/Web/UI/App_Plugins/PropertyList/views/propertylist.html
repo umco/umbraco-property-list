@@ -1,6 +1,7 @@
-﻿<div class="umb-editor rdt__editor" ng-controller="Our.Umbraco.PropertyList.Controllers.RepeatableDataTypeController">
+﻿<div class="umb-editor pl__editor" ng-controller="Our.Umbraco.PropertyList.Controllers.PropertyListController">
 
     <div ng-if="!isConfigured">
+        <!-- TODO: Fix the "edit datatype" URL -->
         <p><em>This data type has not been configured, <a href="#/developer/dataTypes/edit/-1">click here to select a repeatable data type</a>.</em></p>
     </div>
 
@@ -13,30 +14,30 @@
         </a>
 
 
-        <div class="rdt__wrapper" ng-if="model.controls && model.controls.length > 0">
+        <div class="pl__wrapper" ng-if="model.controls && model.controls.length > 0">
 
             <div ui-sortable="sortableOptions" ng-model="model.controls">
 
-                <div class="rdt__property-item" ng-repeat="control in model.controls">
+                <div class="pl__property-item" ng-repeat="control in model.controls">
 
-                    <div class="rdt__add-bar rdt__add-bar--top">
-                        <a ng-click="addContent($event, $index)" class="rdt__add-button" ng-if="canAdd()"><i class="icon icon-add"></i></a>
+                    <div class="pl__add-bar pl__add-bar--top">
+                        <a ng-click="addContent($event, $index)" class="pl__add-button" ng-if="canAdd()"><i class="icon icon-add"></i></a>
                     </div>
 
-                    <div class="rdt__property-wrapper">
+                    <div class="pl__property-wrapper">
 
                         <i class="icon icon-navigation handle"></i>
 
                         <umb-property-editor model="control" />
 
-                        <div class="rdt__buttons" ng-if="canDelete()" ng-mousedown="$event.stopPropagation();">
+                        <div class="pl__buttons" ng-if="canDelete()" ng-mousedown="$event.stopPropagation();">
                             <div class="no-overflow">
                                 <umb-confirm-action ng-if="prompts[control.alias]"
                                                     direction="left"
                                                     on-confirm="deleteContent($event, $index)"
                                                     on-cancel="prompts[control.alias] = false">
                                 </umb-confirm-action>
-                                <a ng-click="prompts[control.alias] = true" class="rdt__button"><i class="icon icon-trash"></i></a>
+                                <a ng-click="prompts[control.alias] = true" class="pl__button"><i class="icon icon-trash"></i></a>
                             </div>
                         </div>
 
@@ -46,8 +47,8 @@
 
             </div>
 
-            <div class="rdt__add-bar rdt__add-bar--bottom">
-                <a ng-click="addContent($event, model.controls.length)" class="rdt__add-button" ng-if="canAdd()"><i class="icon icon-add"></i></a>
+            <div class="pl__add-bar pl__add-bar--bottom">
+                <a ng-click="addContent($event, model.controls.length)" class="pl__add-button" ng-if="canAdd()"><i class="icon icon-add"></i></a>
             </div>
 
         </div>
