@@ -1,6 +1,6 @@
-﻿/*==============
-    RIPETO
-==============*/
+﻿/*===================
+    PROPERTY LIST    
+===================*/
 
 .pl__editor {
     position: relative;
@@ -14,14 +14,15 @@
     position: relative;
     display: block;
     margin: 0;
-    z-index: 10;
+    /*z-index: 10; Turns out that the modal overlay doesn't like this rule */
 }
 
 .pl__property-wrapper {
     position: relative;
-    background-color: #f3f3f5;
+    background-color: #f8f8f8;
     border: 1px solid #b3afbd;
     padding: 10px 7px;
+    cursor: move;
 }
 
 .pl__property-wrapper > .icon {
@@ -33,6 +34,7 @@
 
 .pl__property-wrapper > .umb-property-editor {
     margin: auto 25px;
+    cursor: auto;
 }
 
 .pl__buttons {
