@@ -14,6 +14,7 @@ namespace Our.Umbraco.PropertyList.Web.Controllers
     public class PropertyListApiController : UmbracoAuthorizedJsonController
     {
         // TODO: Once Umbraco's DataTypeController supports retrieving a datatype by Guid, this method can be removed.
+        // https://github.com/umbraco/Umbraco-CMS/blob/dev-v7/src/Umbraco.Web/Editors/DataTypeController.cs
         public DataTypeDisplay GetDataTypeByKey(Guid key)
         {
             var dataType = Services.DataTypeService.GetDataTypeDefinitionById(key);
@@ -25,6 +26,7 @@ namespace Our.Umbraco.PropertyList.Web.Controllers
         }
 
         // TODO: Once Umbraco's ContentTypeController supports retrieving the scaffold by Guid, this method can be removed.
+        // https://github.com/umbraco/Umbraco-CMS/blob/dev-v7/src/Umbraco.Web/Editors/ContentTypeController.cs
         public ContentPropertyDisplay GetPropertyTypeScaffoldByKey(Guid key)
         {
             var dataTypeDiff = Services.DataTypeService.GetDataTypeDefinitionById(key);
