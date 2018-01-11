@@ -1,6 +1,7 @@
 ﻿# Property List
 
 [![Build status](https://img.shields.io/appveyor/ci/UMCO/umbraco-property-list.svg)](https://ci.appveyor.com/project/UMCO/umbraco-property-list)
+[![NuGet release](https://img.shields.io/nuget/v/Our.Umbraco.PropertyList.svg)](https://www.nuget.org/packages/Our.Umbraco.PropertyList)
 
 Property List is a property editor for making repeatable lists of a datatype for Umbraco 7.6+
 
@@ -10,8 +11,16 @@ Property List is a property editor for making repeatable lists of a datatype for
 
 > *Note:* Property List has been developed against **Umbraco v7.6.0** and will support that version and above.
 
-Property List can be built manually from the source-code:
+Property List can be installed from either NuGet package repositories, or build manually from the source-code:
 
+
+#### NuGet package repository
+
+To [install from NuGet](https://www.nuget.org/packages/Our.Umbraco.PropertyList), you can run the following command from within Visual Studio:
+
+	PM> Install-Package Our.Umbraco.PropertyList
+
+We also have a [MyGet package repository](https://www.myget.org/gallery/umbraco-packages) - for bleeding-edge / development releases.
 #### Manual build
 
 If you prefer, you can compile Property List yourself, you'll need:
