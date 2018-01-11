@@ -34,6 +34,8 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
     {
         public const string PropertyEditorAlias = "Our.Umbraco.PropertyList";
 
+        private const string DefaultTextstringPropertyEditorGuid = "0cc0eba1-9960-42c9-bf9b-60e150b429ae"; // Guid for default Textstring
+
         private IDictionary<string, object> _defaultPreValues;
         public override IDictionary<string, object> DefaultPreValues
         {
@@ -45,7 +47,7 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
         {
             _defaultPreValues = new Dictionary<string, object>
             {
-                { "dataType", "0cc0eba1-9960-42c9-bf9b-60e150b429ae" }, // Guid for default Textstring
+                { "dataType", DefaultTextstringPropertyEditorGuid },
                 { "minItems", 0 },
                 { "maxItems", 0 }
             };
@@ -111,7 +113,16 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
                 if (propertyValue == null || string.IsNullOrWhiteSpace(propertyValue))
                     return string.Empty;
 
-                var model = JsonConvert.DeserializeObject<PropertyListValue>(property.Value.ToString());
+                // We'd like this to be hot-swappable with "Repeatable Textstrings" property-editor.
+                // We make the assumption that if the value isn't JSON, then it could be newline-delimited list
+                // let's split/join the values and get it into a proxy JSON string.
+                if (propertyValue.DetectIsJson() == false)
+                {
+                    var items = string.Join("', '", propertyValue.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries));
+                    propertyValue = $"{{ dtd: '{DefaultTextstringPropertyEditorGuid}', values: [ '{items}' ] }}";
+                }
+
+                var model = JsonConvert.DeserializeObject<PropertyListValue>(propertyValue);
                 if (model == null || model.DataTypeGuid.Equals(Guid.Empty) || model.Values == null)
                     return string.Empty;
 
