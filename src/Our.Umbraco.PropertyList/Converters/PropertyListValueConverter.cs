@@ -40,8 +40,7 @@ namespace Our.Umbraco.PropertyList.Converters
 
         public override object ConvertSourceToObject(PublishedPropertyType propertyType, object source, bool preview)
         {
-            var items = source as List<object>;
-            if (items != null)
+            if (source is List<object> items)
             {
                 var innerPropertyType = this.GetInnerPublishedPropertyType(propertyType);
 
@@ -89,14 +88,12 @@ namespace Our.Umbraco.PropertyList.Converters
                 () =>
                 {
                     var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
-
                     var prevalues = dataTypeService.GetPreValuesCollectionByDataTypeId(propertyType.DataTypeId);
                     var dict = prevalues.PreValuesAsDictionary;
                     if (dict.ContainsKey("dataType"))
                     {
                         var dtdPreValue = dict["dataType"];
-                        Guid dtdGuid;
-                        if (Guid.TryParse(dtdPreValue.Value, out dtdGuid))
+                        if (Guid.TryParse(dtdPreValue.Value, out Guid dtdGuid))
                         {
                             var dtd = dataTypeService.GetDataTypeDefinitionById(dtdGuid);
 

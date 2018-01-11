@@ -106,7 +106,9 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
 
             public override object ConvertDbToEditor(Property property, PropertyType propertyType, IDataTypeService dataTypeService)
             {
-                if (property.Value == null || string.IsNullOrWhiteSpace(property.Value.ToString()))
+                var propertyValue = property?.Value?.ToString();
+
+                if (propertyValue == null || string.IsNullOrWhiteSpace(propertyValue))
                     return string.Empty;
 
                 var model = JsonConvert.DeserializeObject<PropertyListValue>(property.Value.ToString());
@@ -134,7 +136,7 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
                 {
                     var obj = model.Values[i];
 
-                    var prop = new Property(propType, obj == null ? null : obj.ToString());
+                    var prop = new Property(propType, obj?.ToString());
                     var newValue = propEditor.ValueEditor.ConvertDbToEditor(prop, propType, dataTypeService);
                     model.Values[i] = (newValue == null) ? null : JToken.FromObject(newValue);
                 }
@@ -162,7 +164,7 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
                 try
                 {
                     var model = JsonConvert.DeserializeObject<PropertyListValue>(property.Value.ToString());
-                    if (model != null && !model.DataTypeGuid.Equals(Guid.Empty) && model.Values != null)
+                    if (model != null && model.DataTypeGuid.Equals(Guid.Empty) == false && model.Values != null)
                     {
                         var dtd = dataTypeService.GetDataTypeDefinitionById(model.DataTypeGuid);
                         var propEditor = PropertyEditorResolver.Current.GetByAlias(dtd.PropertyEditorAlias);
@@ -190,12 +192,12 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
 
             public override XNode ConvertDbToXml(Property property, PropertyType propertyType, IDataTypeService dataTypeService)
             {
-                if (property.Value != null && !string.IsNullOrWhiteSpace(property.Value.ToString()))
+                if (property.Value != null && string.IsNullOrWhiteSpace(property.Value.ToString()) == false)
                 {
                     try
                     {
                         var model = JsonConvert.DeserializeObject<PropertyListValue>(property.Value.ToString());
-                        if (model != null && !model.DataTypeGuid.Equals(Guid.Empty) && model.Values != null)
+                        if (model != null && model.DataTypeGuid.Equals(Guid.Empty) == false && model.Values != null)
                         {
                             var dtd = dataTypeService.GetDataTypeDefinitionById(model.DataTypeGuid);
                             var propEditor = PropertyEditorResolver.Current.GetByAlias(dtd.PropertyEditorAlias);
@@ -204,8 +206,7 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
                             for (var i = 0; i < model.Values.Count; i++)
                             {
                                 var obj = model.Values[i];
-
-                                var prop = new Property(propType, obj == null ? null : obj.ToString());
+                                var prop = new Property(propType, obj?.ToString());
                                 var newValue = propEditor.ValueEditor.ConvertDbToXml(prop, propType, dataTypeService);
                                 model.Values[i] = newValue;
                             }
