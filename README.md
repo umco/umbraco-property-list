@@ -1,7 +1,6 @@
 ﻿# Property List
 
 [![Build status](https://img.shields.io/appveyor/ci/UMCO/umbraco-property-list.svg)](https://ci.appveyor.com/project/UMCO/umbraco-property-list)
-[![Our Umbraco project page](https://img.shields.io/badge/our-umbraco-orange.svg)](https://our.umbraco.org/projects/backoffice-extensions/property-list)
 
 Property List is a property editor for making repeatable lists of a datatype for Umbraco 7.6+
 
@@ -11,13 +10,7 @@ Property List is a property editor for making repeatable lists of a datatype for
 
 > *Note:* Property List has been developed against **Umbraco v7.6.0** and will support that version and above.
 
-Property List can be installed from either Our Umbraco or build manually from the source-code:
-
-#### Our Umbraco package repository
-
-To install from Our Umbraco, please download the package from:
-
-> <https://our.umbraco.org/projects/backoffice-extensions/property-list>
+Property List can be built manually from the source-code:
 
 #### Manual build
 
@@ -113,7 +106,6 @@ What's left to do?
 
 Have a question?
 
-* [Property List Forum](https://our.umbraco.org/projects/backoffice-extensions/property-list/property-list-feedback) on Our Umbraco
 * [Raise an issue](https://github.com/umco/umbraco-property-list/issues) on GitHub
 
 ## Dev Team
