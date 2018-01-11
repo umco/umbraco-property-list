@@ -18,8 +18,8 @@
 	<PropertyGroup>
 		<ProjectName>Our.Umbraco.PropertyList</ProjectName>
 		<PackageName>Property List</PackageName>
-		<MinUmbracoVersion>7.5.11</MinUmbracoVersion>
-		<Readme>Property List is a property editor for making repeatable lists of a datatype for Umbraco 7.5+</Readme>
+		<MinUmbracoVersion>7.6.0</MinUmbracoVersion>
+		<Readme>Property List is a property editor for making repeatable lists of a datatype for Umbraco 7.6+</Readme>
 		<AuthorName>Lee Kelleher, Matt Brailsford</AuthorName>
 		<AuthorUrl>https://github.com/umco/umbraco-property-list/graphs/contributors</AuthorUrl>
 		<PackageLicenseName>MIT license</PackageLicenseName>
@@ -33,7 +33,7 @@
 		<NuGetPackageName>Property List for Umbraco</NuGetPackageName>
 		<Copyright>Copyright &#169; 2017 UMCO, Our Umbraco and other contributors</Copyright>
 		<Owners>Lee Kelleher, Matt Brailsford</Owners>
-		<IconUrl></IconUrl>
+		<IconUrl>https://raw.githubusercontent.com/umco/umbraco-property-list/master/docs/img/logo.png</IconUrl>
 		<Tags>umbraco list editor</Tags>
 		<Language>en-GB</Language>
 		<RequireLicenseAcceptance>false</RequireLicenseAcceptance>
