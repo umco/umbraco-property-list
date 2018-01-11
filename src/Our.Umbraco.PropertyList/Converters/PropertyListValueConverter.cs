@@ -118,5 +118,11 @@ namespace Our.Umbraco.PropertyList.Converters
         {
             return PropertyCacheLevel.Content;
         }
+
+        internal static void ClearDataTypeCache(int dataTypeId)
+        {
+            ApplicationContext.Current.ApplicationCache.RuntimeCache.ClearCacheByKeySearch(
+                string.Concat("Our.Umbraco.PropertyList.PropertyListValueConverter.GetInnerPublishedPropertyType_", dataTypeId));
+        }
     }
 }

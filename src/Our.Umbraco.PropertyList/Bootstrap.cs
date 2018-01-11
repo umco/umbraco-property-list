@@ -1,28 +1,31 @@
-﻿using Umbraco.Core;
-using Umbraco.Core.Events;
-using Umbraco.Core.Models;
-using Umbraco.Core.Services;
+﻿using Newtonsoft.Json;
+using Our.Umbraco.PropertyList.Converters;
+using Umbraco.Core;
+using Umbraco.Core.Cache;
+using Umbraco.Core.Sync;
+using Umbraco.Web.Cache;
 
 namespace Our.Umbraco.PropertyList
 {
     public class Bootstrap : ApplicationEventHandler
     {
-        private CacheHelper _applicationCache;
-
         protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
-            _applicationCache = applicationContext.ApplicationCache;
-
-            DataTypeService.Saved += DataTypeService_Saved;
+            CacheRefresherBase<DataTypeCacheRefresher>.CacheUpdated += DataTypeCacheRefresher_Updated;
         }
 
-        private void DataTypeService_Saved(IDataTypeService sender, SaveEventArgs<IDataTypeDefinition> e)
+        private void DataTypeCacheRefresher_Updated(DataTypeCacheRefresher sender, CacheRefresherEventArgs e)
         {
-            var cacheKeyPrefix = "Our.Umbraco.PropertyList.PropertyListValueConverter.GetInnerPublishedPropertyType_";
-
-            foreach (var dataType in e.SavedEntities)
+            if (e.MessageType == MessageType.RefreshByJson)
             {
-                _applicationCache.RuntimeCache.ClearCacheByKeySearch(string.Concat(cacheKeyPrefix, dataType.Id));
+                var payload = JsonConvert.DeserializeAnonymousType((string)e.MessageObject, new[] { new { Id = default(int) } });
+                if (payload != null)
+                {
+                    foreach (var item in payload)
+                    {
+                        PropertyListValueConverter.ClearDataTypeCache(item.Id);
+                    }
+                }
             }
         }
     }
