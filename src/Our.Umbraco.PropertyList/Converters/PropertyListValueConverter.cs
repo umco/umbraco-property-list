@@ -1,9 +1,11 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using Newtonsoft.Json;
+using Our.Umbraco.PropertyList.Models;
 using Our.Umbraco.PropertyList.PropertyEditors;
 using Umbraco.Core;
 using Umbraco.Core.Models;
@@ -21,15 +23,37 @@ namespace Our.Umbraco.PropertyList.Converters
 
         public override object ConvertDataToSource(PublishedPropertyType propertyType, object source, bool preview)
         {
+            var sourceString = source?.ToString();
+            if (string.IsNullOrWhiteSpace(sourceString))
+                return null;
+
             var innerPropertyType = this.GetInnerPublishedPropertyType(propertyType);
 
-            var elements = XElement.Parse(source.ToString());
+            var items = new List<object>();
+
+            // Detect whether the value is in JSON or XML format
+            //
+            // NOTE: We can't be sure which format the data is in.
+            // With "nested property-editors", (e.g. Nested Content, Stacked Content),
+            // they don't convert the call `ConvertDbToXml`.
+            if (sourceString.DetectIsJson())
+            {
+                var model = JsonConvert.DeserializeObject<PropertyListValue>(sourceString);
+                if (model != null)
+                    items.AddRange(model.Values);
+            }
+            else
+            {
+                // otherwise we assume it's XML
+                var elements = XElement.Parse(sourceString);
+                if (elements != null && elements.HasElements)
+                    items.AddRange(elements.XPathSelectElements("value").Select(x => x.Value));
+            }
 
             var values = new List<object>();
 
-            foreach (var element in elements.XPathSelectElements("value"))
+            foreach (var valueData in items)
             {
-                var valueData = element.Value;
                 var valueSource = innerPropertyType.ConvertDataToSource(valueData, preview);
 
                 values.Add(valueSource);
