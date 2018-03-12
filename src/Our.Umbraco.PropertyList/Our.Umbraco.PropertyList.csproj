@@ -90,6 +90,7 @@
     <Compile Include="PropertyEditors\PropertyListPropertyValueEditor.cs" />
     <Compile Include="PropertyEditors\PropertyListPreValueEditor.cs" />
     <Compile Include="PropertyEditors\PropertyListPropertyEditor.cs" />
+    <Compile Include="ValueConnectors\PropertyListValueConnector.cs" />
     <Compile Include="Web\Controllers\PropertyListApiController.cs" />
   </ItemGroup>
   <ItemGroup>
