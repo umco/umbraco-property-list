@@ -202,15 +202,6 @@
     <Content Include="Web\UI\App_Plugins\PropertyList\views\propertylist.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>IF %25ComputerName%25 == UMBRELLA-SB (
-  IF NOT "$(SolutionDir)" == "*Undefined*" (
-    XCOPY /s /y "$(TargetPath)" "C:\VCS\Umbrella\Clearleft\brighton-college-2017\src\wwwroot\bin"
-    XCOPY /s /y "$(TargetDir)$(ProjectName).pdb" "C:\VCS\Umbrella\Clearleft\brighton-college-2017\src\wwwroot\bin"
-    XCOPY /s /y "$(ProjectDir)Web\UI\*.*" "C:\VCS\Umbrella\Clearleft\brighton-college-2017\src\wwwroot"
-  )
-)</PostBuildEvent>
-  </PropertyGroup>
   <Import Project="..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
