@@ -23,7 +23,7 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
         PropertyListPropertyEditor.PropertyEditorAlias,
         "Property List",
         "JSON",
-        "/App_Plugins/PropertyList/Views/propertylist.html",
+        "~/App_Plugins/PropertyList/Views/propertylist.html",
         Group = "Lists",
         Icon = "icon-bulleted-list",
         IsParameterEditor = false)]
