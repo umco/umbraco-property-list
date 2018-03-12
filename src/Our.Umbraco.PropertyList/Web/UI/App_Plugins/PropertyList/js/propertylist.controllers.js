@@ -29,10 +29,7 @@
 
                 $scope.propertyType = propertyType;
 
-                var item = {
-                    config: propertyType.config,
-                    view: umbPropEditorHelper.getViewPath(propertyType.view)
-                };
+                var propertyTypeViewPath = umbPropEditorHelper.getViewPath(propertyType.view);
 
                 if (!$scope.model.controls) {
                     $scope.model.controls = [];
@@ -50,10 +47,15 @@
                 }
 
                 _.each($scope.model.value.values, function (value, idx) {
+
+                    // NOTE: Must be a copy of the config, not the same object reference.
+                    // Otherwise any config modifications made by the editor will apply to following editors.
+                    var propertyTypeConfig = JSON.parse(JSON.stringify(propertyType.config));
+
                     $scope.model.controls.push({
                         alias: $scope.model.alias + "_" + idx,
-                        config: item.config,
-                        view: item.view,
+                        config: propertyTypeConfig,
+                        view: propertyTypeViewPath,
                         value: value
                     });
                 });
