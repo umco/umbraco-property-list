@@ -5,7 +5,7 @@
     "umbPropEditorHelper",
     function ($scope, contentTypeResource, propertyListResource, umbPropEditorHelper) {
 
-        //console.debug("pl", $scope.model.config.dataType, $scope.model.value);
+        $scope.inited = false;
 
         var dataTypeGuid = $scope.model.config.dataType;
         var minItems = $scope.model.config.minItems || 0;
@@ -13,7 +13,12 @@
 
         $scope.isConfigured = dataTypeGuid != null;
 
-        if ($scope.isConfigured) {
+        if (!$scope.isConfigured) {
+
+            // Model is ready so set inited
+            $scope.inited = true;
+
+        } else {
 
             if (!angular.isObject($scope.model.value))
                 $scope.model.value = undefined;
@@ -59,6 +64,9 @@
                         value: value
                     });
                 });
+
+                // Model is ready so set inited
+                $scope.inited = true;
 
             });
 
