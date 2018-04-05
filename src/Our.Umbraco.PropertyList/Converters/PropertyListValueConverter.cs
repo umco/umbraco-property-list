@@ -97,6 +97,10 @@ namespace Our.Umbraco.PropertyList.Converters
         public override object ConvertSourceToXPath(PublishedPropertyType propertyType, object source, bool preview)
         {
             // TODO: Review if we need to call `ConvertSourceToXPath` for each of the values?
+
+            // This method must return either a `string` or `XPathNavigator` object-type, see Umbraco core for details:
+            // https://github.com/umbraco/Umbraco-CMS/blob/release-7.6.0/src/Umbraco.Core/Models/PublishedContent/PublishedPropertyType.cs#L312
+
             return new XPathDocument(new StringReader(source.ToString())).CreateNavigator();
         }
 
