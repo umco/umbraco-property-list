@@ -108,7 +108,7 @@
             cursorAt: {
                 top: 0
             },
-            update: function (e, ui) {
+            stop: function (e, ui) {
                 $scope.setDirty();
             }
         };
