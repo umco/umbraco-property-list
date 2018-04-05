@@ -76,7 +76,7 @@
 
             var control = {
                 alias: $scope.model.alias + "_" + idx,
-                config: $scope.propertyType.config,
+                config: JSON.parse(JSON.stringify($scope.propertyType.config)),
                 view: umbPropEditorHelper.getViewPath($scope.propertyType.view),
                 value: ""
             };
