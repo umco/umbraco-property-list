@@ -1,29 +1,33 @@
-﻿using Umbraco.Core;
-using Umbraco.Core.Events;
-using Umbraco.Core.Models;
-using Umbraco.Core.Services;
+﻿using Newtonsoft.Json;
+using Our.Umbraco.PropertyList.Converters;
+using Umbraco.Core;
+using Umbraco.Core.Sync;
+using Umbraco.Web.Cache;
 
 namespace Our.Umbraco.PropertyList
 {
     public class Bootstrap : ApplicationEventHandler
     {
-        private CacheHelper _applicationCache;
-
         protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
-            _applicationCache = applicationContext.ApplicationCache;
-
-            DataTypeService.Saved += DataTypeService_Saved;
-        }
-
-        private void DataTypeService_Saved(IDataTypeService sender, SaveEventArgs<IDataTypeDefinition> e)
-        {
-            var cacheKeyPrefix = "Our.Umbraco.PropertyList.PropertyListValueConverter.GetInnerPublishedPropertyType_";
-
-            foreach (var dataType in e.SavedEntities)
+            DataTypeCacheRefresher.CacheUpdated += (sender, e) =>
             {
-                _applicationCache.RuntimeCache.ClearCacheByKeySearch(string.Concat(cacheKeyPrefix, dataType.Id));
-            }
+                if (e.MessageType != MessageType.RefreshByJson)
+                    return;
+
+                // NOTE: The properties for the JSON payload are available here: (Currently there isn't a public API to deserialize the payload)
+                // https://github.com/umbraco/Umbraco-CMS/blob/release-7.6.0/src/Umbraco.Web/Cache/DataTypeCacheRefresher.cs#L66-L70
+                // TODO: Once `DataTypeCacheRefresher.DeserializeFromJsonPayload` is public, we can deserialize correctly.
+                // https://github.com/umbraco/Umbraco-CMS/blob/release-7.6.0/src/Umbraco.Web/Cache/DataTypeCacheRefresher.cs#L27
+                var payload = JsonConvert.DeserializeAnonymousType((string)e.MessageObject, new[] { new { Id = default(int) } });
+                if (payload == null)
+                    return;
+
+                foreach (var item in payload)
+                {
+                    PropertyListValueConverter.ClearDataTypeCache(item.Id);
+                }
+            };
         }
     }
 }

@@ -1,18 +1,19 @@
 ﻿<div class="umb-editor pl__editor" ng-controller="Our.Umbraco.PropertyList.Controllers.PropertyListController">
 
-    <div ng-if="!isConfigured">
+    <umb-load-indicator ng-show="!inited"></umb-load-indicator>
+
+    <div ng-if="inited && !isConfigured">
         <!-- TODO: Fix the "edit datatype" URL -->
         <p><em>This data type has not been configured, <a href="#/developer/dataTypes/edit/-1">click here to select a repeatable data type</a>.</em></p>
     </div>
 
-    <div ng-if="isConfigured">
+    <div ng-if="inited && isConfigured">
 
         <a href="" class="umb-group-builder__property -placeholder" ng-if="!model.controls || model.controls.length == 0" ng-click="addContent($event, 0)">
             <div class="umb-group-builder__property-preview umb-group-builder__placeholder-box">
                 <localize key="grid_addElement"></localize>
             </div>
         </a>
-
 
         <div class="pl__wrapper" ng-if="model.controls && model.controls.length > 0">
 

@@ -1,9 +1,11 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using Newtonsoft.Json;
+using Our.Umbraco.PropertyList.Models;
 using Our.Umbraco.PropertyList.PropertyEditors;
 using Umbraco.Core;
 using Umbraco.Core.Models;
@@ -21,15 +23,37 @@ namespace Our.Umbraco.PropertyList.Converters
 
         public override object ConvertDataToSource(PublishedPropertyType propertyType, object source, bool preview)
         {
+            var sourceString = source?.ToString();
+            if (string.IsNullOrWhiteSpace(sourceString))
+                return null;
+
             var innerPropertyType = this.GetInnerPublishedPropertyType(propertyType);
 
-            var elements = XElement.Parse(source.ToString());
+            var items = new List<object>();
+
+            // Detect whether the value is in JSON or XML format
+            //
+            // NOTE: We can't be sure which format the data is in.
+            // With "nested property-editors", (e.g. Nested Content, Stacked Content),
+            // they don't convert the call `ConvertDbToXml`.
+            if (sourceString.DetectIsJson())
+            {
+                var model = JsonConvert.DeserializeObject<PropertyListValue>(sourceString);
+                if (model != null)
+                    items.AddRange(model.Values);
+            }
+            else
+            {
+                // otherwise we assume it's XML
+                var elements = XElement.Parse(sourceString);
+                if (elements != null && elements.HasElements)
+                    items.AddRange(elements.XPathSelectElements("value").Select(x => x.Value));
+            }
 
             var values = new List<object>();
 
-            foreach (var element in elements.XPathSelectElements("value"))
+            foreach (var valueData in items)
             {
-                var valueData = element.Value;
                 var valueSource = innerPropertyType.ConvertDataToSource(valueData, preview);
 
                 values.Add(valueSource);
@@ -40,8 +64,7 @@ namespace Our.Umbraco.PropertyList.Converters
 
         public override object ConvertSourceToObject(PublishedPropertyType propertyType, object source, bool preview)
         {
-            var items = source as List<object>;
-            if (items != null)
+            if (source is List<object> items)
             {
                 var innerPropertyType = this.GetInnerPublishedPropertyType(propertyType);
 
@@ -74,6 +97,10 @@ namespace Our.Umbraco.PropertyList.Converters
         public override object ConvertSourceToXPath(PublishedPropertyType propertyType, object source, bool preview)
         {
             // TODO: Review if we need to call `ConvertSourceToXPath` for each of the values?
+
+            // This method must return either a `string` or `XPathNavigator` object-type, see Umbraco core for details:
+            // https://github.com/umbraco/Umbraco-CMS/blob/release-7.6.0/src/Umbraco.Core/Models/PublishedContent/PublishedPropertyType.cs#L312
+
             return new XPathDocument(new StringReader(source.ToString())).CreateNavigator();
         }
 
@@ -89,14 +116,12 @@ namespace Our.Umbraco.PropertyList.Converters
                 () =>
                 {
                     var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
-
                     var prevalues = dataTypeService.GetPreValuesCollectionByDataTypeId(propertyType.DataTypeId);
                     var dict = prevalues.PreValuesAsDictionary;
                     if (dict.ContainsKey("dataType"))
                     {
                         var dtdPreValue = dict["dataType"];
-                        Guid dtdGuid;
-                        if (Guid.TryParse(dtdPreValue.Value, out dtdGuid))
+                        if (Guid.TryParse(dtdPreValue.Value, out Guid dtdGuid))
                         {
                             var dtd = dataTypeService.GetDataTypeDefinitionById(dtdGuid);
 
@@ -120,6 +145,12 @@ namespace Our.Umbraco.PropertyList.Converters
         public PropertyCacheLevel GetPropertyCacheLevel(PublishedPropertyType propertyType, PropertyCacheValue cacheValue)
         {
             return PropertyCacheLevel.Content;
+        }
+
+        internal static void ClearDataTypeCache(int dataTypeId)
+        {
+            ApplicationContext.Current.ApplicationCache.RuntimeCache.ClearCacheByKeySearch(
+                string.Concat("Our.Umbraco.PropertyList.PropertyListValueConverter.GetInnerPublishedPropertyType_", dataTypeId));
         }
     }
 }

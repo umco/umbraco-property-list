@@ -1,11 +1,10 @@
 ﻿angular.module("umbraco").controller("Our.Umbraco.PropertyList.Controllers.PropertyListController", [
     "$scope",
-    "contentTypeResource",
     "Our.Umbraco.PropertyList.Resources.PropertyListResources",
     "umbPropEditorHelper",
-    function ($scope, contentTypeResource, propertyListResource, umbPropEditorHelper) {
+    function ($scope, propertyListResource, umbPropEditorHelper) {
 
-        //console.debug("pl", $scope.model.config.dataType, $scope.model.value);
+        $scope.inited = false;
 
         var dataTypeGuid = $scope.model.config.dataType;
         var minItems = $scope.model.config.minItems || 0;
@@ -13,7 +12,12 @@
 
         $scope.isConfigured = dataTypeGuid != null;
 
-        if ($scope.isConfigured) {
+        if (!$scope.isConfigured) {
+
+            // Model is ready so set inited
+            $scope.inited = true;
+
+        } else {
 
             if (!angular.isObject($scope.model.value))
                 $scope.model.value = undefined;
@@ -29,10 +33,7 @@
 
                 $scope.propertyType = propertyType;
 
-                var item = {
-                    config: propertyType.config,
-                    view: umbPropEditorHelper.getViewPath(propertyType.view)
-                };
+                var propertyTypeViewPath = umbPropEditorHelper.getViewPath(propertyType.view);
 
                 if (!$scope.model.controls) {
                     $scope.model.controls = [];
@@ -50,13 +51,21 @@
                 }
 
                 _.each($scope.model.value.values, function (value, idx) {
+
+                    // NOTE: Must be a copy of the config, not the same object reference.
+                    // Otherwise any config modifications made by the editor will apply to following editors.
+                    var propertyTypeConfig = JSON.parse(JSON.stringify(propertyType.config));
+
                     $scope.model.controls.push({
                         alias: $scope.model.alias + "_" + idx,
-                        config: item.config,
-                        view: item.view,
+                        config: propertyTypeConfig,
+                        view: propertyTypeViewPath,
                         value: value
                     });
                 });
+
+                // Model is ready so set inited
+                $scope.inited = true;
 
             });
 
@@ -74,7 +83,7 @@
 
             var control = {
                 alias: $scope.model.alias + "_" + idx,
-                config: $scope.propertyType.config,
+                config: JSON.parse(JSON.stringify($scope.propertyType.config)),
                 view: umbPropEditorHelper.getViewPath($scope.propertyType.view),
                 value: ""
             };
@@ -98,7 +107,7 @@
             cursorAt: {
                 top: 0
             },
-            update: function (e, ui) {
+            stop: function (e, ui) {
                 $scope.setDirty();
             }
         };
