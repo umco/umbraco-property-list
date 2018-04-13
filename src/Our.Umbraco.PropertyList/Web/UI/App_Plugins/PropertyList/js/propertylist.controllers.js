@@ -1,9 +1,8 @@
 ﻿angular.module("umbraco").controller("Our.Umbraco.PropertyList.Controllers.PropertyListController", [
     "$scope",
-    "contentTypeResource",
     "Our.Umbraco.PropertyList.Resources.PropertyListResources",
     "umbPropEditorHelper",
-    function ($scope, contentTypeResource, propertyListResource, umbPropEditorHelper) {
+    function ($scope, propertyListResource, umbPropEditorHelper) {
 
         $scope.inited = false;
 
