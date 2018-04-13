@@ -16,7 +16,7 @@ Property List can be built manually from the source-code:
 
 If you prefer, you can compile Property List yourself, you'll need:
 
-* Visual Studio 2015 (or above)
+* Visual Studio 2017 (or above)
 
 To clone it locally click the "Clone in Windows" button above or run the following git commands.
 
@@ -79,13 +79,13 @@ What's left to do?
 				- [x] ConvertDbToString
 				- [x] ConvertDbToEditor
 				- [x] ConvertEditorToDb
-	- [ ] Browser testing (Chrome, Firefox, IE/Edge)
+	- [x] Browser testing (Chrome, Firefox, IE/Edge)
 	
 - [x] PropertyValueConverter
 	- [x] Get target DataType definition
 	- [x] Create dummy PropertyType (in order to run the target property-editor's value-converter)
 	- [x] Return as IEnumerable of that type
-	- [ ] Investigate ModelsBuilder support - think it's to provide the return type
+	- [x] Investigate ModelsBuilder support - think it's to provide the return type
 
 - [x] Packaging
 	- [x] MSBuild script
@@ -115,6 +115,6 @@ Have a question?
 
 ## License
 
-Copyright &copy; 2016 UMCO, Our Umbraco and [other contributors](https://github.com/umco/umbraco-property-list/graphs/contributors)
+Copyright &copy; 2017 UMCO, Our Umbraco and [other contributors](https://github.com/umco/umbraco-property-list/graphs/contributors)
 
 Licensed under the [MIT License](LICENSE.md)
