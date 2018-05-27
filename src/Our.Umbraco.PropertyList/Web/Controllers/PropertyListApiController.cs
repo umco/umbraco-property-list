@@ -18,10 +18,12 @@ namespace Our.Umbraco.PropertyList.Web.Controllers
         public DataTypeDisplay GetDataTypeByKey(Guid key)
         {
             var dataType = Services.DataTypeService.GetDataTypeDefinitionById(key);
+
             if (dataType == null)
             {
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             }
+
             return Mapper.Map<IDataTypeDefinition, DataTypeDisplay>(dataType);
         }
 

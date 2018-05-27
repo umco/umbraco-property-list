@@ -4,18 +4,41 @@
     "umbPropEditorHelper",
     function ($scope, propertyListResource, umbPropEditorHelper) {
 
-        $scope.inited = false;
-
         var dataTypeGuid = $scope.model.config.dataType;
         var minItems = $scope.model.config.minItems || 0;
         var maxItems = $scope.model.config.maxItems || 0;
+        var propertyType = null; // this will be set in the `getPropertyTypeScaffoldByKey` callback
 
-        $scope.isConfigured = dataTypeGuid != null;
+        var vm = this;
 
-        if (!$scope.isConfigured) {
+        vm.inited = false;
+
+        vm.sortableOptions = {
+            axis: "y",
+            containment: "parent",
+            cursor: "move",
+            handle: ".list-view-layout__sort-handle",
+            opacity: 0.7,
+            scroll: true,
+            tolerance: "pointer",
+            stop: function (e, ui) {
+                setDirty();
+            }
+        };
+
+        vm.canAdd = canAdd;
+        vm.canDelete = canDelete;
+        vm.showPrompt = showPrompt;
+        vm.hidePrompt = hidePrompt;
+        vm.addContent = addContent;
+        vm.deleteContent = deleteContent;
+
+        vm.isConfigured = dataTypeGuid !== null;
+
+        if (!vm.isConfigured) {
 
             // Model is ready so set inited
-            $scope.inited = true;
+            vm.inited = true;
 
         } else {
 
@@ -27,16 +50,14 @@
                 values: []
             };
 
-            $scope.prompts = {};
+            propertyListResource.getPropertyTypeScaffoldByKey(dataTypeGuid).then(function (scaffold) {
 
-            propertyListResource.getPropertyTypeScaffoldByKey(dataTypeGuid).then(function (propertyType) {
-
-                $scope.propertyType = propertyType;
+                propertyType = scaffold;
 
                 var propertyTypeViewPath = umbPropEditorHelper.getViewPath(propertyType.view);
 
-                if (!$scope.model.controls) {
-                    $scope.model.controls = [];
+                if (!vm.controls) {
+                    vm.controls = [];
                 }
 
                 if (!$scope.model.value.values) {
@@ -56,7 +77,7 @@
                     // Otherwise any config modifications made by the editor will apply to following editors.
                     var propertyTypeConfig = JSON.parse(JSON.stringify(propertyType.config));
 
-                    $scope.model.controls.push({
+                    vm.controls.push({
                         alias: $scope.model.alias + "_" + idx,
                         config: propertyTypeConfig,
                         view: propertyTypeViewPath,
@@ -65,54 +86,47 @@
                 });
 
                 // Model is ready so set inited
-                $scope.inited = true;
+                vm.inited = true;
 
             });
 
         }
 
-        $scope.canAdd = function () {
-            return !maxItems || maxItems == 0 || $scope.model.controls.length < maxItems;
+        function canAdd() {
+            return !maxItems || maxItems === "0" || vm.length < maxItems;
         }
 
-        $scope.canDelete = function () {
-            return !minItems || minItems == 0 || $scope.model.controls.length > minItems;
+        function canDelete() {
+            return !minItems || minItems === "0" || vm.length > minItems;
         }
 
-        $scope.addContent = function (evt, idx) {
+        function showPrompt(control) {
+            control.deletePrompt = true;
+        }
+
+        function hidePrompt(control) {
+            control.deletePrompt = false;
+        }
+
+        function addContent() {
 
             var control = {
-                alias: $scope.model.alias + "_" + idx,
-                config: JSON.parse(JSON.stringify($scope.propertyType.config)),
-                view: umbPropEditorHelper.getViewPath($scope.propertyType.view),
+                alias: $scope.model.alias + "_" + (vm.controls.length + 1),
+                config: JSON.parse(JSON.stringify(propertyType.config)),
+                view: umbPropEditorHelper.getViewPath(propertyType.view),
                 value: ""
             };
 
-            $scope.model.controls.splice(idx, 0, control);
-            $scope.setDirty();
+            vm.controls.push(control);
+            setDirty();
         }
 
-        $scope.deleteContent = function (evt, idx) {
-            $scope.model.controls.splice(idx, 1);
-            $scope.setDirty();
+        function deleteContent(idx) {
+            vm.controls.splice(idx, 1);
+            setDirty();
         }
 
-        $scope.sortableOptions = {
-            axis: 'y',
-            cursor: "move",
-            handle: ".pl__property-wrapper",
-            helper: function () {
-                return $('<div class=\"pl__sortable-helper\"><div><i class=\"icon icon-navigation\"></i></div></div>');
-            },
-            cursorAt: {
-                top: 0
-            },
-            stop: function (e, ui) {
-                $scope.setDirty();
-            }
-        };
-
-        $scope.setDirty = function () {
+        function setDirty() {
             if ($scope.propertyForm) {
                 $scope.propertyForm.$setDirty();
             }
@@ -121,7 +135,7 @@
         var unsubscribe = $scope.$on("formSubmitting", function (ev, args) {
             var tmpValues = [];
 
-            _.each($scope.model.controls, function (control, idx) {
+            _.each(vm.controls, function (control, idx) {
                 tmpValues[idx] = control.value;
             });
 
@@ -242,3 +256,29 @@ angular.module("umbraco").controller("Our.Umbraco.PropertyList.Controllers.DataT
         }
 
     }]);
+
+angular.module("umbraco.resources").factory("Our.Umbraco.PropertyList.Resources.PropertyListResources",
+    function ($q, $http, umbRequestHelper) {
+        return {
+            getDataTypeByKey: function (key) {
+                return umbRequestHelper.resourcePromise(
+                    $http({
+                        url: "/umbraco/backoffice/PropertyList/PropertyListApi/GetDataTypeByKey",
+                        method: "GET",
+                        params: { key: key }
+                    }),
+                    "Failed to retrieve datatype by key"
+                );
+            },
+            getPropertyTypeScaffoldByKey: function (key) {
+                return umbRequestHelper.resourcePromise(
+                    $http({
+                        url: "/umbraco/backoffice/PropertyList/PropertyListApi/GetPropertyTypeScaffoldByKey",
+                        method: "GET",
+                        params: { key: key }
+                    }),
+                    "Failed to retrieve property type scaffold by key"
+                );
+            }
+        };
+    });

@@ -198,9 +198,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Web\UI\App_Plugins\PropertyList\css\propertylist.css" />
-    <Content Include="Web\UI\App_Plugins\PropertyList\js\propertylist.controllers.js" />
-    <Content Include="Web\UI\App_Plugins\PropertyList\js\propertylist.resources.js" />
+    <Content Include="Web\UI\App_Plugins\PropertyList\js\propertylist.js" />
     <Content Include="Web\UI\App_Plugins\PropertyList\views\propertylist.datatypepicker.html" />
     <Content Include="Web\UI\App_Plugins\PropertyList\views\propertylist.html" />
   </ItemGroup>
