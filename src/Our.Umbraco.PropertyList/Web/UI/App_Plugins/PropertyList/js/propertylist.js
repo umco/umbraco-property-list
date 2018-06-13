@@ -139,49 +139,56 @@
 
 angular.module("umbraco").controller("Our.Umbraco.PropertyList.Controllers.DataTypePickerController", [
     "$scope",
-    "contentTypeResource",
     "dataTypeHelper",
     "dataTypeResource",
     "entityResource",
     "Our.Umbraco.PropertyList.Resources.PropertyListResources",
-    function ($scope, contentTypeResource, dataTypeHelper, dataTypeResource, entityResource, propertyListResource) {
-
-        if (!$scope.model.property) {
-
-            $scope.model.property = {};
-
-            if ($scope.model.value) {
-                propertyListResource.getDataTypeByKey($scope.model.value).then(function (dataType) {
-                    // update editor
-                    $scope.model.property.editor = dataType.selectedEditor;
-                    $scope.model.property.dataTypeId = dataType.id;
-                    $scope.model.property.dataTypeIcon = dataType.icon;
-                    $scope.model.property.dataTypeName = dataType.name;
-                });
-            }
-        }
+    function ($scope, dataTypeHelper, dataTypeResource, entityResource, propertyListResource) {
 
         var vm = this;
 
-        vm.openEditorPickerOverlay = openEditorPickerOverlay;
-        vm.openEditorSettingsOverlay = openEditorSettingsOverlay;
+        vm.selectedDataType = null;
+        vm.allowAdd = true;
+        vm.allowRemove = true;
+        vm.allowEdit = true;
+        vm.sortable = false;
 
-        function setModelValue(dataTypeId) {
-            entityResource.getById(dataTypeId, "DataType").then(function (entity) {
-                $scope.model.value = entity.key;
+        vm.add = add;
+        vm.edit = edit;
+        vm.remove = remove;
+
+        if (!!$scope.model.value) {
+            propertyListResource.getDataTypeByKey($scope.model.value).then(function (dataType) {
+                vm.selectedDataType = dataType;
+                vm.allowAdd = false;
             });
-        };
+        }
 
-        function openEditorPickerOverlay(property) {
-
-            vm.editorPickerOverlay = {};
-            vm.editorPickerOverlay.property = $scope.model.property;
-            vm.editorPickerOverlay.view = "views/common/overlays/contenttypeeditor/editorpicker/editorpicker.html";
-            vm.editorPickerOverlay.show = true;
+        function add() {
+            vm.editorPickerOverlay = {
+                property: {},
+                view: "views/common/overlays/contenttypeeditor/editorpicker/editorpicker.html",
+                show: true
+            };
 
             vm.editorPickerOverlay.submit = function (model) {
 
-                setModelValue(model.property.dataTypeId);
+                entityResource.getById(model.property.dataTypeId, "DataType").then(function (entity) {
+
+                    $scope.model.value = entity.key;
+
+                    vm.selectedDataType = {
+                        id: entity.id,
+                        key: entity.key,
+                        name: entity.name,
+                        icon: model.property.dataTypeIcon,
+                        selectedEditor: model.property.editor
+                    };
+
+                    vm.allowAdd = false;
+
+                    setDirty();
+                });
 
                 vm.editorPickerOverlay.show = false;
                 vm.editorPickerOverlay = null;
@@ -191,45 +198,26 @@ angular.module("umbraco").controller("Our.Umbraco.PropertyList.Controllers.DataT
                 vm.editorPickerOverlay.show = false;
                 vm.editorPickerOverlay = null;
             };
+        };
 
-        }
+        function edit() {
+            dataTypeResource.getById(vm.selectedDataType.id).then(function (dataType) {
 
-        function openEditorSettingsOverlay(property) {
-
-            // get data type
-            dataTypeResource.getById(property.dataTypeId).then(function (dataType) {
-
-                vm.editorSettingsOverlay = {};
-                vm.editorSettingsOverlay.title = "Editor settings";
-                vm.editorSettingsOverlay.view = "views/common/overlays/contenttypeeditor/editorsettings/editorsettings.html";
-                vm.editorSettingsOverlay.dataType = dataType;
-                vm.editorSettingsOverlay.show = true;
+                vm.editorSettingsOverlay = {
+                    title: "Editor settings",
+                    view: "views/common/overlays/contenttypeeditor/editorsettings/editorsettings.html",
+                    dataType: dataType,
+                    show: true
+                };
 
                 vm.editorSettingsOverlay.submit = function (model) {
-
                     var preValues = dataTypeHelper.createPreValueProps(model.dataType.preValues);
-
                     dataTypeResource.save(model.dataType, preValues, false).then(function (newDataType) {
-
-                        contentTypeResource.getPropertyTypeScaffold(newDataType.id).then(function (propertyType) {
-
-                            setModelValue(newDataType.id);
-
-                            // update editor
-                            property.config = propertyType.config;
-                            property.editor = propertyType.editor;
-                            property.view = propertyType.view;
-                            property.dataTypeId = newDataType.id;
-                            property.dataTypeIcon = newDataType.icon;
-                            property.dataTypeName = newDataType.name;
-
-                            vm.editorSettingsOverlay.show = false;
-                            vm.editorSettingsOverlay = null;
-
-                        });
-
+                        vm.selectedDataType.name = newDataType.name;
+                        vm.editorSettingsOverlay.show = false;
+                        vm.editorSettingsOverlay = null;
+                        setDirty();
                     });
-
                 };
 
                 vm.editorSettingsOverlay.close = function (oldModel) {
@@ -238,8 +226,20 @@ angular.module("umbraco").controller("Our.Umbraco.PropertyList.Controllers.DataT
                 };
 
             });
+        };
 
-        }
+        function remove() {
+            $scope.model.value = null;
+            vm.selectedDataType = null;
+            vm.allowAdd = true;
+            setDirty();
+        };
+
+        function setDirty() {
+            if ($scope.propertyForm) {
+                $scope.propertyForm.$setDirty();
+            }
+        };
 
     }]);
 
