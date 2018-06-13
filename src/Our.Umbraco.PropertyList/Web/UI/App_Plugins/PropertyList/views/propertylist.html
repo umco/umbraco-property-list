@@ -1,59 +1,28 @@
-﻿<div class="umb-editor pl__editor" ng-controller="Our.Umbraco.PropertyList.Controllers.PropertyListController">
+﻿<ng-form ng-controller="Our.Umbraco.PropertyList.Controllers.PropertyListController as vm">
 
-    <umb-load-indicator ng-show="!inited"></umb-load-indicator>
+    <div class="list-view-layouts" ui-sortable="vm.sortableOptions" ng-model="vm.controls">
 
-    <div ng-if="inited && !isConfigured">
-        <!-- TODO: Fix the "edit datatype" URL -->
-        <p><em>This data type has not been configured, <a href="#/developer/dataTypes/edit/-1">click here to select a repeatable data type</a>.</em></p>
-    </div>
+        <div class="list-view-layout" ng-repeat="control in vm.controls">
 
-    <div ng-if="inited && isConfigured">
+            <i class="icon-navigation list-view-layout__sort-handle"></i>
 
-        <a href="" class="umb-group-builder__property -placeholder" ng-if="!model.controls || model.controls.length == 0" ng-click="addContent($event, 0)">
-            <div class="umb-group-builder__property-preview umb-group-builder__placeholder-box">
-                <localize key="grid_addElement"></localize>
-            </div>
-        </a>
-
-        <div class="pl__wrapper" ng-if="model.controls && model.controls.length > 0">
-
-            <div ui-sortable="sortableOptions" ng-model="model.controls">
-
-                <div class="pl__property-item" ng-repeat="control in model.controls">
-
-                    <div class="pl__add-bar pl__add-bar--top">
-                        <a ng-click="addContent($event, $index)" class="pl__add-button" ng-if="canAdd()"><i class="icon icon-add"></i></a>
-                    </div>
-
-                    <div class="pl__property-wrapper">
-
-                        <i class="icon icon-navigation handle"></i>
-
-                        <umb-property-editor model="control" />
-
-                        <div class="pl__buttons" ng-if="canDelete()" ng-mousedown="$event.stopPropagation();">
-                            <div class="no-overflow">
-                                <umb-confirm-action ng-if="prompts[control.alias]"
-                                                    direction="left"
-                                                    on-confirm="deleteContent($event, $index)"
-                                                    on-cancel="prompts[control.alias] = false">
-                                </umb-confirm-action>
-                                <a ng-click="prompts[control.alias] = true" class="pl__button"><i class="icon icon-trash"></i></a>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div>
-
+            <div class="list-view-layout__path">
+                <umb-property-editor model="control" />
             </div>
 
-            <div class="pl__add-bar pl__add-bar--bottom">
-                <a ng-click="addContent($event, model.controls.length)" class="pl__add-button" ng-if="canAdd()"><i class="icon icon-add"></i></a>
+            <div ng-if="vm.canDelete()" class="list-view-layout__remove">
+                <i class="icon-trash" ng-click="vm.showPrompt(control)"></i>
+                <umb-confirm-action ng-if="control.deletePrompt"
+                                    direction="left"
+                                    on-confirm="vm.deleteContent($index)"
+                                    on-cancel="vm.hidePrompt(control)">
+                </umb-confirm-action>
             </div>
 
         </div>
 
     </div>
 
-</div>
+    <a href="" class="list-view-add-layout" ng-click="vm.addContent()" ng-if="vm.canAdd()">Add item</a>
+
+</ng-form>

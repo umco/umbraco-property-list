@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using System.Xml.XPath;
@@ -12,7 +11,7 @@ using Umbraco.Core.Models;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.PropertyEditors;
 
-namespace Our.Umbraco.PropertyList.Converters
+namespace Our.Umbraco.PropertyList.ValueConverters
 {
     public class PropertyListValueConverter : PropertyValueConverterBase, IPropertyValueConverterMeta
     {
@@ -23,8 +22,8 @@ namespace Our.Umbraco.PropertyList.Converters
 
         public override object ConvertDataToSource(PublishedPropertyType propertyType, object source, bool preview)
         {
-            var sourceString = source?.ToString();
-            if (string.IsNullOrWhiteSpace(sourceString))
+            var data = source?.ToString();
+            if (string.IsNullOrWhiteSpace(data))
                 return null;
 
             var innerPropertyType = this.GetInnerPublishedPropertyType(propertyType);
@@ -36,16 +35,16 @@ namespace Our.Umbraco.PropertyList.Converters
             // NOTE: We can't be sure which format the data is in.
             // With "nested property-editors", (e.g. Nested Content, Stacked Content),
             // they don't convert the call `ConvertDbToXml`.
-            if (sourceString.DetectIsJson())
+            if (data.DetectIsJson())
             {
-                var model = JsonConvert.DeserializeObject<PropertyListValue>(sourceString);
+                var model = JsonConvert.DeserializeObject<PropertyListValue>(data);
                 if (model != null)
                     items.AddRange(model.Values);
             }
             else
             {
                 // otherwise we assume it's XML
-                var elements = XElement.Parse(sourceString);
+                var elements = XElement.Parse(data);
                 if (elements != null && elements.HasElements)
                     items.AddRange(elements.XPathSelectElements("value").Select(x => x.Value));
             }
@@ -96,12 +95,29 @@ namespace Our.Umbraco.PropertyList.Converters
 
         public override object ConvertSourceToXPath(PublishedPropertyType propertyType, object source, bool preview)
         {
-            // TODO: Review if we need to call `ConvertSourceToXPath` for each of the values?
+            if (source is List<object> items)
+            {
+                var innerPropertyType = this.GetInnerPublishedPropertyType(propertyType);
+
+                var elements = new List<XElement>();
+
+                foreach (var item in items)
+                {
+                    if (item != null)
+                    {
+                        var xpathValue = innerPropertyType.ConvertSourceToXPath(item, preview);
+                        var element = new XElement("value", xpathValue);
+                        elements.Add(element);
+                    }
+                }
+
+                return new XElement("values", elements).CreateNavigator();
+            }
 
             // This method must return either a `string` or `XPathNavigator` object-type, see Umbraco core for details:
             // https://github.com/umbraco/Umbraco-CMS/blob/release-7.6.0/src/Umbraco.Core/Models/PublishedContent/PublishedPropertyType.cs#L312
-
-            return new XPathDocument(new StringReader(source.ToString())).CreateNavigator();
+            //return new XPathDocument(new StringReader(source.ToString())).CreateNavigator();
+            return base.ConvertSourceToXPath(propertyType, source, preview);
         }
 
         private PublishedPropertyType GetInnerPublishedPropertyType(PublishedPropertyType propertyType)
