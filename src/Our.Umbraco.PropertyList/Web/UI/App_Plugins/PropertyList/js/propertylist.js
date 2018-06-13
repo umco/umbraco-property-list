@@ -11,8 +11,6 @@
 
         var vm = this;
 
-        vm.inited = false;
-
         vm.sortableOptions = {
             axis: "y",
             containment: "parent",
@@ -33,64 +31,51 @@
         vm.addContent = addContent;
         vm.deleteContent = deleteContent;
 
-        vm.isConfigured = dataTypeGuid !== null;
 
-        if (!vm.isConfigured) {
+        if (!angular.isObject($scope.model.value))
+            $scope.model.value = undefined;
 
-            // Model is ready so set inited
-            vm.inited = true;
+        $scope.model.value = $scope.model.value || {
+            dtd: dataTypeGuid,
+            values: []
+        };
 
-        } else {
+        propertyListResource.getPropertyTypeScaffoldByKey(dataTypeGuid).then(function (scaffold) {
 
-            if (!angular.isObject($scope.model.value))
-                $scope.model.value = undefined;
+            propertyType = scaffold;
 
-            $scope.model.value = $scope.model.value || {
-                dtd: dataTypeGuid,
-                values: []
-            };
+            var propertyTypeViewPath = umbPropEditorHelper.getViewPath(propertyType.view);
 
-            propertyListResource.getPropertyTypeScaffoldByKey(dataTypeGuid).then(function (scaffold) {
+            if (!vm.controls) {
+                vm.controls = [];
+            }
 
-                propertyType = scaffold;
+            if (!$scope.model.value.values) {
+                $scope.model.value.values = [];
+            }
 
-                var propertyTypeViewPath = umbPropEditorHelper.getViewPath(propertyType.view);
-
-                if (!vm.controls) {
-                    vm.controls = [];
+            // Enforce min items
+            if ($scope.model.value.values.length < minItems) {
+                for (var i = $scope.model.value.values.length; i < minItems; i++) {
+                    $scope.addContent(null, i);
                 }
+            }
 
-                if (!$scope.model.value.values) {
-                    $scope.model.value.values = [];
-                }
+            _.each($scope.model.value.values, function (value, idx) {
 
-                // Enforce min items
-                if ($scope.model.value.values.length < minItems) {
-                    for (var i = $scope.model.value.values.length; i < minItems; i++) {
-                        $scope.addContent(null, i);
-                    }
-                }
+                // NOTE: Must be a copy of the config, not the same object reference.
+                // Otherwise any config modifications made by the editor will apply to following editors.
+                var propertyTypeConfig = JSON.parse(JSON.stringify(propertyType.config));
 
-                _.each($scope.model.value.values, function (value, idx) {
-
-                    // NOTE: Must be a copy of the config, not the same object reference.
-                    // Otherwise any config modifications made by the editor will apply to following editors.
-                    var propertyTypeConfig = JSON.parse(JSON.stringify(propertyType.config));
-
-                    vm.controls.push({
-                        alias: $scope.model.alias + "_" + idx,
-                        config: propertyTypeConfig,
-                        view: propertyTypeViewPath,
-                        value: value
-                    });
+                vm.controls.push({
+                    alias: $scope.model.alias + "_" + idx,
+                    config: propertyTypeConfig,
+                    view: propertyTypeViewPath,
+                    value: value
                 });
-
-                // Model is ready so set inited
-                vm.inited = true;
-
             });
 
-        }
+        });
 
         function canAdd() {
             return !maxItems || maxItems === "0" || vm.length < maxItems;
@@ -133,19 +118,20 @@
         };
 
         var unsubscribe = $scope.$on("formSubmitting", function (ev, args) {
-            var tmpValues = [];
+
+            var tmpValue = {
+                dtd: dataTypeGuid,
+                values: []
+            };
 
             _.each(vm.controls, function (control, idx) {
-                tmpValues[idx] = control.value;
+                tmpValue.values.push(control.value);
             });
 
-            $scope.model.value = {
-                dtd: dataTypeGuid,
-                values: !_.isEmpty(tmpValues) ? tmpValues : []
-            };
+            $scope.model.value = tmpValue;
         });
 
-        $scope.$on('$destroy', function () {
+        $scope.$on("$destroy", function () {
             unsubscribe();
         });
 
@@ -257,8 +243,10 @@ angular.module("umbraco").controller("Our.Umbraco.PropertyList.Controllers.DataT
 
     }]);
 
-angular.module("umbraco.resources").factory("Our.Umbraco.PropertyList.Resources.PropertyListResources",
-    function ($q, $http, umbRequestHelper) {
+angular.module("umbraco.resources").factory("Our.Umbraco.PropertyList.Resources.PropertyListResources", [
+    "$http",
+    "umbRequestHelper",
+    function ($http, umbRequestHelper) {
         return {
             getDataTypeByKey: function (key) {
                 return umbRequestHelper.resourcePromise(
@@ -281,4 +269,5 @@ angular.module("umbraco.resources").factory("Our.Umbraco.PropertyList.Resources.
                 );
             }
         };
-    });
+    }
+]);
