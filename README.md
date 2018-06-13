@@ -21,6 +21,7 @@ To [install from NuGet](https://www.nuget.org/packages/Our.Umbraco.PropertyList)
 	PM> Install-Package Our.Umbraco.PropertyList
 
 We also have a [MyGet package repository](https://www.myget.org/gallery/umbraco-packages) - for bleeding-edge / development releases.
+
 #### Manual build
 
 If you prefer, you can compile Property List yourself, you'll need:
@@ -53,60 +54,11 @@ Anyone and everyone is welcome to contribute. Please take a moment to review the
 
 What's left to do?
 
-- [x] Pre Value Editor
-	- [x] Prevalues
-		- [x] DataType Picker
-			- [x] Only save the ID
-		- [x] Minimum items
-		- [x] Maximum items
-		- [x] Hide label
-		- **Ideas**
-			- [ ] Disable sorting?
-
-- [ ] Value Editor
-	- [x] ContentType preview
-	- [x] HTML view
-		- [x] Check if we can we reuse any Umbraco directives?
-		- [x] Check if any UMCO projects are useful for reuse?
-	- [x] CSS
-	- [x] Angular / JS
-		- [x] Prepare the value-editor
-			- [x] Get the DataType by ID; then get...
-				- [x] config/prevalues
-				- [x] view-path
-				- [x] property alias
-			- [x] Initialize the list values
-			- [x] Set the list values
-			- [x] Set the IsDirty flag
-		- [x] Render the DataType/property-editor
-			- [x] Repeatable
-			- [x] Addable
-			- [x] Removeable
-			- [x] Sortable
-		- [x] Saving the values
-			- [x] PropertyValueEditor
-				- [x] ConvertDbToString
-				- [x] ConvertDbToEditor
-				- [x] ConvertEditorToDb
-	- [x] Browser testing (Chrome, Firefox, IE/Edge)
-	
-- [x] PropertyValueConverter
-	- [x] Get target DataType definition
-	- [x] Create dummy PropertyType (in order to run the target property-editor's value-converter)
-	- [x] Return as IEnumerable of that type
-	- [x] Investigate ModelsBuilder support - think it's to provide the return type
-
-- [x] Packaging
-	- [x] MSBuild script
-		- [x] Umbraco package
-		- [x] NuGet package
-	- [x] AppVeyor
-
-- [ ] Courier data-resolver
-	- [ ] Pre Value Editor
-		- [ ] Add DataType dependency
-	- [ ] Value Editor
-		- [ ] Processing all list item DataTypes
+- [ ] Deploy ValueConnector
+  - [ ] Pre Value Editor
+    - [ ] Add DataType dependency
+  - [ ] Value Editor
+    - [ ] Processing all list item DataTypes
 
 
 ---
