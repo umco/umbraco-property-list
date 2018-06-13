@@ -119,6 +119,8 @@
 
         var unsubscribe = $scope.$on("formSubmitting", function (ev, args) {
 
+            $scope.$broadcast("propertyListFormSubmitting");
+
             var tmpValue = {
                 dtd: dataTypeGuid,
                 values: []
@@ -242,6 +244,33 @@ angular.module("umbraco").controller("Our.Umbraco.PropertyList.Controllers.DataT
         };
 
     }]);
+
+angular.module("umbraco.directives").directive("propertyListPropertyEditor", [
+    function () {
+
+        var link = function ($scope, $element, $attrs, $ctrl) {
+
+            var unsubscribe = $scope.$on("propertyListFormSubmitting", function (ev, args) {
+                $scope.$broadcast("formSubmitting", { scope: $scope });
+            });
+
+            $scope.$on("$destroy", function () {
+                unsubscribe();
+            });
+        };
+
+        return {
+            require: "^form",
+            restrict: "E",
+            rep1ace: true,
+            link: link,
+            template: '<umb-property-editor model="control" />',
+            scope: {
+                control: "=model"
+            }
+        };
+    }
+]);
 
 angular.module("umbraco.resources").factory("Our.Umbraco.PropertyList.Resources.PropertyListResources", [
     "$http",
