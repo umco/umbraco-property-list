@@ -57,9 +57,14 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
 
             // Get the associated datatype definition
             var dtd = dataTypeService.GetDataTypeDefinitionById(model.DataTypeGuid);
+            if (dtd == null)
+                return base.ConvertDbToEditor(property, propertyType, dataTypeService);
 
             // Lookup the property editor
             var propEditor = PropertyEditorResolver.Current.GetByAlias(dtd.PropertyEditorAlias);
+            if (propEditor == null)
+                return base.ConvertDbToEditor(property, propertyType, dataTypeService);
+
             var propType = new PropertyType(dtd);
 
             for (var i = 0; i < model.Values.Count; i++)
@@ -87,7 +92,13 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
                 return base.ConvertDbToString(property, propertyType, dataTypeService);
 
             var dtd = dataTypeService.GetDataTypeDefinitionById(model.DataTypeGuid);
+            if (dtd == null)
+                return base.ConvertDbToString(property, propertyType, dataTypeService);
+
             var propEditor = PropertyEditorResolver.Current.GetByAlias(dtd.PropertyEditorAlias);
+            if (propEditor == null)
+                return base.ConvertDbToString(property, propertyType, dataTypeService);
+
             var propType = new PropertyType(dtd);
 
             for (var i = 0; i < model.Values.Count; i++)
@@ -113,7 +124,13 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
                 return base.ConvertDbToXml(property, propertyType, dataTypeService);
 
             var dtd = dataTypeService.GetDataTypeDefinitionById(model.DataTypeGuid);
+            if (dtd == null)
+                return base.ConvertDbToXml(property, propertyType, dataTypeService);
+
             var propEditor = PropertyEditorResolver.Current.GetByAlias(dtd.PropertyEditorAlias);
+            if (propEditor == null)
+                return base.ConvertDbToXml(property, propertyType, dataTypeService);
+
             var propType = new PropertyType(dtd);
 
             for (var i = 0; i < model.Values.Count; i++)
@@ -140,9 +157,18 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
                 return base.ConvertEditorToDb(editorValue, currentValue);
 
             var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
+
             var dtd = dataTypeService.GetDataTypeDefinitionById(model.DataTypeGuid);
+            if (dtd == null)
+                return base.ConvertEditorToDb(editorValue, currentValue);
+
             var preValues = dataTypeService.GetPreValuesCollectionByDataTypeId(dtd.Id);
+            if (preValues == null)
+                return base.ConvertEditorToDb(editorValue, currentValue);
+
             var propEditor = PropertyEditorResolver.Current.GetByAlias(dtd.PropertyEditorAlias);
+            if (propEditor == null)
+                return base.ConvertEditorToDb(editorValue, currentValue);
 
             for (var i = 0; i < model.Values.Count; i++)
             {
