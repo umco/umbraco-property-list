@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Our.Umbraco.PropertyList.Models;
 using Our.Umbraco.PropertyList.PropertyEditors;
 using Umbraco.Core;
+using Umbraco.Core.Cache;
 using Umbraco.Core.Models;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.PropertyEditors;
@@ -127,7 +128,7 @@ namespace Our.Umbraco.PropertyList.ValueConverters
                 propertyType.DataTypeId,
                 propertyType.ContentType.Id);
 
-            return (PublishedPropertyType)ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(
+            return ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem<PublishedPropertyType>(
                 cacheKey,
                 () =>
                 {
