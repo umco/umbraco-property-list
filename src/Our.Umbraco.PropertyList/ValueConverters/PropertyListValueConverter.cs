@@ -142,7 +142,7 @@ namespace Our.Umbraco.PropertyList.ValueConverters
                         {
                             var dtd = dataTypeService.GetDataTypeDefinitionById(dtdGuid);
 
-                            return new PublishedPropertyType(propertyType.ContentType, new PropertyType(dtd));
+                            return new PublishedPropertyType(propertyType.ContentType, new PropertyType(dtd, propertyType.PropertyTypeAlias));
                         }
                     }
 

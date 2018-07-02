@@ -65,7 +65,7 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
             if (propEditor == null)
                 return base.ConvertDbToEditor(property, propertyType, dataTypeService);
 
-            var propType = new PropertyType(dtd);
+            var propType = new PropertyType(dtd, propertyType.Alias);
 
             for (var i = 0; i < model.Values.Count; i++)
             {
@@ -99,7 +99,7 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
             if (propEditor == null)
                 return base.ConvertDbToString(property, propertyType, dataTypeService);
 
-            var propType = new PropertyType(dtd);
+            var propType = new PropertyType(dtd, propertyType.Alias);
 
             for (var i = 0; i < model.Values.Count; i++)
             {
@@ -131,7 +131,7 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
             if (propEditor == null)
                 return base.ConvertDbToXml(property, propertyType, dataTypeService);
 
-            var propType = new PropertyType(dtd);
+            var propType = new PropertyType(dtd, propertyType.Alias);
 
             for (var i = 0; i < model.Values.Count; i++)
             {
