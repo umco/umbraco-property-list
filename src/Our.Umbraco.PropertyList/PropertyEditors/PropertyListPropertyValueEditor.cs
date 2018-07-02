@@ -69,9 +69,7 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
 
             for (var i = 0; i < model.Values.Count; i++)
             {
-                var obj = model.Values[i];
-
-                var prop = new Property(propType, obj?.ToString());
+                var prop = new Property(propType, model.Values[i]);
                 var newValue = propEditor.ValueEditor.ConvertDbToEditor(prop, propType, dataTypeService);
 
                 model.Values[i] = (newValue == null) ? null : JToken.FromObject(newValue);
@@ -103,8 +101,7 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
 
             for (var i = 0; i < model.Values.Count; i++)
             {
-                var obj = model.Values[i];
-                var prop = new Property(propType, obj?.ToString());
+                var prop = new Property(propType, model.Values[i]);
                 var newValue = propEditor.ValueEditor.ConvertDbToString(prop, propType, dataTypeService);
 
                 model.Values[i] = newValue;
@@ -135,8 +132,7 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
 
             for (var i = 0; i < model.Values.Count; i++)
             {
-                var obj = model.Values[i];
-                var prop = new Property(propType, obj?.ToString());
+                var prop = new Property(propType, model.Values[i]);
                 var newValue = propEditor.ValueEditor.ConvertDbToXml(prop, propType, dataTypeService);
                 model.Values[i] = newValue;
             }
