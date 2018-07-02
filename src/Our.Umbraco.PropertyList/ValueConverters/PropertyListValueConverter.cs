@@ -80,7 +80,7 @@ namespace Our.Umbraco.PropertyList.ValueConverters
 
                 // Force result to right type
                 var targetType = innerPropertyType.ClrType;
-                var result = Array.CreateInstance(innerPropertyType.ClrType, objects.Count);
+                var result = Array.CreateInstance(targetType, objects.Count);
                 for (var i = 0; i < objects.Count; i++)
                 {
                     var attempt = objects[i].TryConvertTo(targetType);
@@ -115,9 +115,6 @@ namespace Our.Umbraco.PropertyList.ValueConverters
                 return new XElement("values", elements).CreateNavigator();
             }
 
-            // This method must return either a `string` or `XPathNavigator` object-type, see Umbraco core for details:
-            // https://github.com/umbraco/Umbraco-CMS/blob/release-7.6.0/src/Umbraco.Core/Models/PublishedContent/PublishedPropertyType.cs#L312
-            //return new XPathDocument(new StringReader(source.ToString())).CreateNavigator();
             return base.ConvertSourceToXPath(propertyType, source, preview);
         }
 
