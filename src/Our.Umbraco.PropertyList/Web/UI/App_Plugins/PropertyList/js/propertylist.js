@@ -5,8 +5,8 @@
     function ($scope, propertyListResource, umbPropEditorHelper) {
 
         var dataTypeGuid = $scope.model.config.dataType;
-        var minItems = $scope.model.config.minItems || 0;
-        var maxItems = $scope.model.config.maxItems || 0;
+        var minItems = parseInt($scope.model.config.minItems) || 0;
+        var maxItems = parseInt($scope.model.config.maxItems) || 0;
         var propertyType = null; // this will be set in the `getPropertyTypeScaffoldByKey` callback
 
         var vm = this;
@@ -30,7 +30,6 @@
         vm.hidePrompt = hidePrompt;
         vm.addContent = addContent;
         vm.deleteContent = deleteContent;
-
 
         if (!angular.isObject($scope.model.value))
             $scope.model.value = undefined;
@@ -57,7 +56,7 @@
             // Enforce min items
             if ($scope.model.value.values.length < minItems) {
                 for (var i = $scope.model.value.values.length; i < minItems; i++) {
-                    $scope.addContent(null, i);
+                    $scope.model.value.values.push("");
                 }
             }
 
@@ -78,11 +77,11 @@
         });
 
         function canAdd() {
-            return !maxItems || maxItems === "0" || vm.length < maxItems;
+            return !maxItems || maxItems === 0 || vm.controls.length < maxItems;
         }
 
         function canDelete() {
-            return !minItems || minItems === "0" || vm.length > minItems;
+            return !minItems || minItems === 0 || vm.controls.length > minItems;
         }
 
         function showPrompt(control) {
