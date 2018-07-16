@@ -11,6 +11,7 @@ using Umbraco.Core.Models.Editors;
 using Umbraco.Core.PropertyEditors;
 using Umbraco.Core.Services;
 using Umbraco.Web.PropertyEditors;
+using static Our.Umbraco.PropertyList.PropertyListConstants;
 
 namespace Our.Umbraco.PropertyList.PropertyEditors
 {
@@ -26,13 +27,9 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
         {
             base.ConfigureForDisplay(preValues);
 
-            if (preValues.PreValuesAsDictionary.ContainsKey("hideLabel"))
+            if (preValues.PreValuesAsDictionary.ContainsKey(PreValueKeys.HideLabel))
             {
-                var boolAttempt = preValues.PreValuesAsDictionary["hideLabel"].Value.TryConvertTo<bool>();
-                if (boolAttempt.Success)
-                {
-                    HideLabel = boolAttempt.Result;
-                }
+                HideLabel = preValues.PreValuesAsDictionary[PreValueKeys.HideLabel].Value == "1";
             }
         }
 

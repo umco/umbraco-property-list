@@ -1,5 +1,6 @@
 ﻿using Umbraco.Core.IO;
 using Umbraco.Core.PropertyEditors;
+using static Our.Umbraco.PropertyList.PropertyListConstants;
 
 namespace Our.Umbraco.PropertyList.PropertyEditors
 {
@@ -11,7 +12,7 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
             // In terms of inheritance, we'd like the "dataType" field to always be at the top.
             Fields.Insert(0, new PreValueField
             {
-                Key = "dataType",
+                Key = PreValueKeys.DataType,
                 Name = "Data Type",
                 View = IOHelper.ResolveUrl("~/App_Plugins/PropertyList/views/propertylist.datatypepicker.html"),
                 Description = "Select a data type."
@@ -22,21 +23,21 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
             {
                 new PreValueField
                 {
-                    Key = "minItems",
+                    Key = PreValueKeys.MinItems,
                     Name = "Min Items",
                     View = "number",
                     Description = "Set the minimum number of items allowed."
                 },
                 new PreValueField
                 {
-                    Key = "maxItems",
+                    Key = PreValueKeys.MaxItems,
                     Name = "Max Items",
                     View = "number",
                     Description = "Set the maximum number of items allowed."
                 },
                 new PreValueField
                 {
-                    Key = "hideLabel",
+                    Key = PreValueKeys.HideLabel,
                     Name = "Hide Label",
                     View = "boolean",
                     Description = "Set whether to hide the editor label and have the list take up the full width of the editor window."

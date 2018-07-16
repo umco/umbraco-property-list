@@ -11,6 +11,7 @@ using Umbraco.Core.Cache;
 using Umbraco.Core.Models;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.PropertyEditors;
+using static Our.Umbraco.PropertyList.PropertyListConstants;
 
 namespace Our.Umbraco.PropertyList.ValueConverters
 {
@@ -132,9 +133,9 @@ namespace Our.Umbraco.PropertyList.ValueConverters
                     var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
                     var prevalues = dataTypeService.GetPreValuesCollectionByDataTypeId(propertyType.DataTypeId);
                     var dict = prevalues.PreValuesAsDictionary;
-                    if (dict.ContainsKey("dataType"))
+                    if (dict.ContainsKey(PreValueKeys.DataType))
                     {
-                        var dtdPreValue = dict["dataType"];
+                        var dtdPreValue = dict[PreValueKeys.DataType];
                         if (Guid.TryParse(dtdPreValue.Value, out Guid dtdGuid))
                         {
                             var dtd = dataTypeService.GetDataTypeDefinitionById(dtdGuid);

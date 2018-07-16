@@ -8,7 +8,7 @@ using Umbraco.Core;
 using Umbraco.Core.Cache;
 using Umbraco.Core.Models;
 using Umbraco.Core.PropertyEditors;
-using Aliases = Our.Umbraco.PropertyList.PropertyEditors.PropertyListPreValueEditor.Keys;
+using static Our.Umbraco.PropertyList.PropertyListConstants;
 
 namespace Our.Umbraco.PropertyList.PropertyEditors
 {
@@ -33,12 +33,12 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
             if (preValues.IsDictionaryBased)
             {
                 var dict = preValues.PreValuesAsDictionary;
-                if (getIntValue(Aliases.MinItems, out int minItems) && model.Values.Count < minItems)
+                if (getIntValue(PreValueKeys.MinItems, out int minItems) && model.Values.Count < minItems)
                 {
                     results.Add(new ValidationResult($"There are {model.Values.Count} items in the list, when the minimum is set to {minItems}."));
                 }
 
-                if (getIntValue(Aliases.MaxItems, out int maxItems) && model.Values.Count > maxItems)
+                if (getIntValue(PreValueKeys.MaxItems, out int maxItems) && model.Values.Count > maxItems)
                 {
                     results.Add(new ValidationResult($"There are {model.Values.Count} items in the list, when the maximum is set to {maxItems}."));
                 }

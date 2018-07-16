@@ -2,6 +2,7 @@
 using ClientDependency.Core;
 using Umbraco.Core.PropertyEditors;
 using Umbraco.Web.PropertyEditors;
+using static Our.Umbraco.PropertyList.PropertyListConstants;
 
 namespace Our.Umbraco.PropertyList.PropertyEditors
 {
@@ -26,9 +27,10 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
         {
             _defaultPreValues = new Dictionary<string, object>
             {
-                { "dataType", DefaultTextstringPropertyEditorGuid },
-                { "minItems", 0 },
-                { "maxItems", 0 }
+                { PreValueKeys.DataType, DefaultTextstringPropertyEditorGuid },
+                { PreValueKeys.MinItems, 0 },
+                { PreValueKeys.MaxItems, 0 },
+                { PreValueKeys.HideLabel, 0 }
             };
         }
 
