@@ -1,4 +1,4 @@
-﻿<ng-form ng-controller="Our.Umbraco.PropertyList.Controllers.PropertyListController as vm">
+﻿<div class="umco-property-list alias--{{ model.alias }}" ng-controller="Our.Umbraco.PropertyList.Controllers.PropertyListController as vm">
 
     <div class="list-view-layouts" ui-sortable="vm.sortableOptions" ng-model="vm.controls">
 
@@ -25,4 +25,4 @@
 
     <a href="" class="list-view-add-layout" ng-click="vm.addContent()" ng-if="vm.canAdd()">Add item</a>
 
-</ng-form>
+</div>
