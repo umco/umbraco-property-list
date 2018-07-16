@@ -5,7 +5,7 @@ using Umbraco.Web.PropertyEditors;
 
 namespace Our.Umbraco.PropertyList.PropertyEditors
 {
-    [PropertyEditor(PropertyEditorAlias, PropertyEditorName, "JSON", PropertyEditorViewPath, Group = "Lists", Icon = "icon-bulleted-list", IsParameterEditor = false)]
+    [PropertyEditor(PropertyEditorAlias, PropertyEditorName, PropertyEditorValueTypes.Json, PropertyEditorViewPath, Group = "Lists", Icon = "icon-bulleted-list", IsParameterEditor = false)]
     [PropertyEditorAsset(ClientDependencyType.Javascript, "~/App_Plugins/PropertyList/js/propertylist.js")]
     public class PropertyListPropertyEditor : PropertyEditor
     {
