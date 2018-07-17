@@ -45,7 +45,7 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
             if (propertyValue.DetectIsJson() == false)
             {
                 var items = string.Join("', '", propertyValue.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries));
-                propertyValue = $"{{ dtd: '{PropertyListPropertyEditor.DefaultTextstringPropertyEditorGuid}', values: [ '{items}' ] }}";
+                propertyValue = $"{{ dtd: '{DataTypeGuids.DefaultTextstring}', values: [ '{items}' ] }}";
             }
 
             var model = JsonConvert.DeserializeObject<PropertyListValue>(propertyValue);

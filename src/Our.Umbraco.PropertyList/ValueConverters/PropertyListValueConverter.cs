@@ -19,7 +19,7 @@ namespace Our.Umbraco.PropertyList.ValueConverters
     {
         public override bool IsConverter(PublishedPropertyType propertyType)
         {
-            return propertyType.PropertyEditorAlias.Equals(PropertyListPropertyEditor.PropertyEditorAlias);
+            return propertyType.PropertyEditorAlias.Equals(PropertyEditorKeys.Alias);
         }
 
         public override object ConvertDataToSource(PublishedPropertyType propertyType, object source, bool preview)
@@ -121,13 +121,8 @@ namespace Our.Umbraco.PropertyList.ValueConverters
 
         private PublishedPropertyType GetInnerPublishedPropertyType(PublishedPropertyType propertyType)
         {
-            var cacheKey = string.Format(
-                "Our.Umbraco.PropertyList.PropertyListValueConverter.GetInnerPublishedPropertyType_{0}_{1}",
-                propertyType.DataTypeId,
-                propertyType.ContentType.Id);
-
             return ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem<PublishedPropertyType>(
-                cacheKey,
+                string.Format(ValueConverterKeys.CacheKeyFormat, propertyType.DataTypeId, propertyType.ContentType.Id),
                 () =>
                 {
                     var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
@@ -165,7 +160,7 @@ namespace Our.Umbraco.PropertyList.ValueConverters
         internal static void ClearDataTypeCache(int dataTypeId)
         {
             ApplicationContext.Current.ApplicationCache.RuntimeCache.ClearCacheByKeySearch(
-                string.Concat("Our.Umbraco.PropertyList.PropertyListValueConverter.GetInnerPublishedPropertyType_", dataTypeId));
+                string.Format(ValueConverterKeys.CacheKeyFormat, dataTypeId, string.Empty));
         }
     }
 }

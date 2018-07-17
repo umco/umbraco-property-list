@@ -67,9 +67,8 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
 
         private Tuple<PreValueCollection, PropertyEditor, List<IPropertyValidator>> GetInnerPropertyMetaData(Guid dataTypeGuid)
         {
-            var cacheKey = $"Our.Umbraco.PropertyList.PropertyListValidator.GetPropertyValidators_{dataTypeGuid}";
             return ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem<Tuple<PreValueCollection, PropertyEditor, List<IPropertyValidator>>>(
-                cacheKey,
+                string.Format(PropertyValidatorKeys.CacheKeyFormat, dataTypeGuid),
                  () =>
                  {
                      var service = ApplicationContext.Current.Services.DataTypeService;
@@ -93,7 +92,7 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
         internal static void ClearDataTypeCache(Guid dataTypeGuid)
         {
             ApplicationContext.Current.ApplicationCache.RuntimeCache.ClearCacheByKeySearch(
-                $"Our.Umbraco.PropertyList.PropertyListValidator.GetPropertyValidators_{dataTypeGuid}");
+                string.Format(PropertyValidatorKeys.CacheKeyFormat, dataTypeGuid));
         }
     }
 }

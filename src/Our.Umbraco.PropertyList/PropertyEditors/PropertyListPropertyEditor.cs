@@ -6,16 +6,10 @@ using static Our.Umbraco.PropertyList.PropertyListConstants;
 
 namespace Our.Umbraco.PropertyList.PropertyEditors
 {
-    [PropertyEditor(PropertyEditorAlias, PropertyEditorName, PropertyEditorValueTypes.Json, PropertyEditorViewPath, Group = "Lists", Icon = "icon-bulleted-list", IsParameterEditor = false)]
-    [PropertyEditorAsset(ClientDependencyType.Javascript, "~/App_Plugins/PropertyList/js/propertylist.js")]
+    [PropertyEditor(PropertyEditorKeys.Alias, PropertyEditorKeys.Name, PropertyEditorValueTypes.Json, PropertyEditorKeys.ViewPath, Group = PropertyEditorKeys.Group, Icon = PropertyEditorKeys.Icon, IsParameterEditor = false)]
+    [PropertyEditorAsset(ClientDependencyType.Javascript, PropertyEditorKeys.JavaScriptPath)]
     public class PropertyListPropertyEditor : PropertyEditor
     {
-        public const string PropertyEditorAlias = "Our.Umbraco.PropertyList";
-        public const string PropertyEditorName = "Property List";
-        public const string PropertyEditorViewPath = "~/App_Plugins/PropertyList/Views/propertylist.html";
-
-        internal const string DefaultTextstringPropertyEditorGuid = "0cc0eba1-9960-42c9-bf9b-60e150b429ae"; // Guid for default Textstring
-
         private IDictionary<string, object> _defaultPreValues;
         public override IDictionary<string, object> DefaultPreValues
         {
@@ -27,7 +21,7 @@ namespace Our.Umbraco.PropertyList.PropertyEditors
         {
             _defaultPreValues = new Dictionary<string, object>
             {
-                { PreValueKeys.DataType, DefaultTextstringPropertyEditorGuid },
+                { PreValueKeys.DataType, DataTypeGuids.DefaultTextstring },
                 { PreValueKeys.MinItems, 0 },
                 { PreValueKeys.MaxItems, 0 },
                 { PreValueKeys.HideLabel, 0 }
