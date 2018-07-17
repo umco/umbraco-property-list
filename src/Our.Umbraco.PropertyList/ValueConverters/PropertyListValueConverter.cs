@@ -7,9 +7,11 @@ using Newtonsoft.Json;
 using Our.Umbraco.PropertyList.Models;
 using Our.Umbraco.PropertyList.PropertyEditors;
 using Umbraco.Core;
+using Umbraco.Core.Cache;
 using Umbraco.Core.Models;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.PropertyEditors;
+using static Our.Umbraco.PropertyList.PropertyListConstants;
 
 namespace Our.Umbraco.PropertyList.ValueConverters
 {
@@ -17,7 +19,7 @@ namespace Our.Umbraco.PropertyList.ValueConverters
     {
         public override bool IsConverter(PublishedPropertyType propertyType)
         {
-            return propertyType.PropertyEditorAlias.Equals(PropertyListPropertyEditor.PropertyEditorAlias);
+            return propertyType.PropertyEditorAlias.Equals(PropertyEditorKeys.Alias);
         }
 
         public override object ConvertDataToSource(PublishedPropertyType propertyType, object source, bool preview)
@@ -79,7 +81,7 @@ namespace Our.Umbraco.PropertyList.ValueConverters
 
                 // Force result to right type
                 var targetType = innerPropertyType.ClrType;
-                var result = Array.CreateInstance(innerPropertyType.ClrType, objects.Count);
+                var result = Array.CreateInstance(targetType, objects.Count);
                 for (var i = 0; i < objects.Count; i++)
                 {
                     var attempt = objects[i].TryConvertTo(targetType);
@@ -114,34 +116,26 @@ namespace Our.Umbraco.PropertyList.ValueConverters
                 return new XElement("values", elements).CreateNavigator();
             }
 
-            // This method must return either a `string` or `XPathNavigator` object-type, see Umbraco core for details:
-            // https://github.com/umbraco/Umbraco-CMS/blob/release-7.6.0/src/Umbraco.Core/Models/PublishedContent/PublishedPropertyType.cs#L312
-            //return new XPathDocument(new StringReader(source.ToString())).CreateNavigator();
             return base.ConvertSourceToXPath(propertyType, source, preview);
         }
 
         private PublishedPropertyType GetInnerPublishedPropertyType(PublishedPropertyType propertyType)
         {
-            var cacheKey = string.Format(
-                "Our.Umbraco.PropertyList.PropertyListValueConverter.GetInnerPublishedPropertyType_{0}_{1}",
-                propertyType.DataTypeId,
-                propertyType.ContentType.Id);
-
-            return (PublishedPropertyType)ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(
-                cacheKey,
+            return ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem<PublishedPropertyType>(
+                string.Format(ValueConverterKeys.CacheKeyFormat, propertyType.DataTypeId, propertyType.ContentType.Id),
                 () =>
                 {
                     var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
                     var prevalues = dataTypeService.GetPreValuesCollectionByDataTypeId(propertyType.DataTypeId);
                     var dict = prevalues.PreValuesAsDictionary;
-                    if (dict.ContainsKey("dataType"))
+                    if (dict.ContainsKey(PreValueKeys.DataType))
                     {
-                        var dtdPreValue = dict["dataType"];
+                        var dtdPreValue = dict[PreValueKeys.DataType];
                         if (Guid.TryParse(dtdPreValue.Value, out Guid dtdGuid))
                         {
                             var dtd = dataTypeService.GetDataTypeDefinitionById(dtdGuid);
 
-                            return new PublishedPropertyType(propertyType.ContentType, new PropertyType(dtd));
+                            return new PublishedPropertyType(propertyType.ContentType, new PropertyType(dtd, propertyType.PropertyTypeAlias));
                         }
                     }
 
@@ -166,7 +160,7 @@ namespace Our.Umbraco.PropertyList.ValueConverters
         internal static void ClearDataTypeCache(int dataTypeId)
         {
             ApplicationContext.Current.ApplicationCache.RuntimeCache.ClearCacheByKeySearch(
-                string.Concat("Our.Umbraco.PropertyList.PropertyListValueConverter.GetInnerPublishedPropertyType_", dataTypeId));
+                string.Format(ValueConverterKeys.CacheKeyFormat, dataTypeId, string.Empty));
         }
     }
 }
