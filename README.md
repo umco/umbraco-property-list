@@ -6,6 +6,8 @@
 
 Property List is a property editor for making repeatable lists of a datatype for Umbraco 7.6+
 
+![Property List Editor](docs/img/screenshots/property-list-property-editor.png)
+
 ## Getting Started
 
 ### Installation
