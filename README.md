@@ -42,6 +42,11 @@ To clone it locally click the "Clone in Windows" button above or run the followi
 	cd umbraco-property-list
 	.\build.cmd
 
+
+### Documentation
+
+For details on how to use the Property List package, please refer to our [Developers Guide](docs/developers-guide.md) documentation.
+
 ---
 
 ## Known Issues

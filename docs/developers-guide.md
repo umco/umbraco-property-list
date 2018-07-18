@@ -91,5 +91,5 @@ If you are using Umbraco's ModelsBuilder feature, then the underlying object-typ
 
 ### Useful Links
 
-* [Source Code](https://github.com/leekelleher/umbraco-property-list)
+* [Source Code](https://github.com/umco/umbraco-property-list)
 * [Our Umbraco Project Page](http://our.umbraco.org/projects/backoffice-extensions/property-list)
