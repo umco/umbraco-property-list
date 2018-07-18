@@ -4,7 +4,6 @@
 
 1. [Introduction](#introduction)
 2. [Getting Set Up](#getting-set-up)
-  * [System Requirements](#system-requirements)
 3. [Configuring Property List](#configuring-property-list)
 4. [Editing Property List](#editing-property-list)
 5. [Rendering Property List](#rendering-property-list)
@@ -14,13 +13,11 @@
 
 ### Introduction
 
-**Property List** is property editor for making repeatable lists for Umbraco 7.6+, similar to the default **Repeatable Textstring** editor. However **Property List** has the ability to use any data-type to define the type of the list. By using data-types, we can use any property-editor to power the list, opening up to community property-editors, such as [**Styled Textbox**](https://our.umbraco.com/projects/backoffice-extensions/styled-textbox/).
+**Property List** is property editor for making repeatable lists for Umbraco 7.6+, similar to the default [**Multiple Textbox aka Repeatable textstrings**](https://our.umbraco.com/documentation/getting-started/backoffice/property-editors/built-in-property-editors/Multiple-Textbox) editor. However **Property List** has the ability to use any data-type to define the type of the list. By using data-types, we can use any property-editor to power the list, opening up to community property-editors, such as [**Styled Textbox**](https://our.umbraco.com/projects/backoffice-extensions/styled-textbox/).
 
 ---
 
 ### Getting Set Up
-
-#### System Requirements
 
 Before you get started, there are a number of things you will need:
 
@@ -35,7 +32,7 @@ The **Property List** property editor is set-up/configured in the same way as an
 
 You should then be presented with the **Property List** property editors prevalue editor as shown below.
 
-![Property List - Prevalue Editor](assets/img/screenshots/property-list-data-prevalues.png)
+![Property List - Prevalue Editor](img/screenshots/property-list-data-prevalues.png)
 
 The prevalue editor allows you to configure the following properties.
 
@@ -54,13 +51,13 @@ Once your data-type has been configured, set-up a property on your page document
 
 When viewing a **Property List** editor for the first time, you'll be presented with a simple "Add item" button to get you started.
 
-![Property List - Add Item](assets/img/screenshots/property-list-property-editor-01.png)
+![Property List - Add Item](img/screenshots/property-list-property-editor-01.png)
 
 Clicking the "Add item" button will add a new item in the list.
 
 To reorder the list, click and drag the move icon up and down to place the items in the order you want.
 
-![Property List - Add Item](assets/img/screenshots/property-list-property-editor-02.png)
+![Property List - Add Item](img/screenshots/property-list-property-editor-02.png)
 
 To remove an item from the list, click the trash can icon. If the minimum number of items is reached, then the trash can icon will disappear, this prevents going below the minimum allowed number of items.
 

@@ -72,7 +72,7 @@ Have a question?
 * [Lee Kelleher](https://github.com/leekelleher)
 * [Matt Brailsford](https://github.com/mattbrailsford)
 
-If you enjoyed using Property List on your commercial Umbraco projects, then please do consider supporting our work on other open-source Umbraco packages.
+If you enjoy using Property List on your commercial Umbraco projects, please do consider supporting our work on other open-source Umbraco packages.
 
 <a href="https://www.patreon.com/bePatron?u=4312563"><img src="http://weareumco.com/img/umco_patreon.png?v=1" alt="Become a UMCO Patron!" height="60" /></a>
 
