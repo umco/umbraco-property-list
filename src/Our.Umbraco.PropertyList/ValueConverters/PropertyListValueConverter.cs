@@ -19,14 +19,16 @@ namespace Our.Umbraco.PropertyList.ValueConverters
     {
         public override bool IsConverter(PublishedPropertyType propertyType)
         {
-            return propertyType.PropertyEditorAlias.Equals(PropertyEditorKeys.Alias);
+            return propertyType.PropertyEditorAlias.InvariantEquals(PropertyEditorKeys.Alias);
         }
 
         public override object ConvertDataToSource(PublishedPropertyType propertyType, object source, bool preview)
         {
             var data = source?.ToString();
             if (string.IsNullOrWhiteSpace(data))
+            {
                 return null;
+            }
 
             var innerPropertyType = this.GetInnerPublishedPropertyType(propertyType);
 
@@ -41,14 +43,18 @@ namespace Our.Umbraco.PropertyList.ValueConverters
             {
                 var model = JsonConvert.DeserializeObject<PropertyListValue>(data);
                 if (model != null)
+                {
                     items.AddRange(model.Values);
+                }
             }
             else
             {
                 // otherwise we assume it's XML
                 var elements = XElement.Parse(data);
                 if (elements != null && elements.HasElements)
+                {
                     items.AddRange(elements.XPathSelectElements("value").Select(x => x.Value));
+                }
             }
 
             var values = new List<object>();
@@ -79,14 +85,16 @@ namespace Our.Umbraco.PropertyList.ValueConverters
                     }
                 }
 
-                // Force result to right type
+                // Ensure the result is of the correct type
                 var targetType = innerPropertyType.ClrType;
                 var result = Array.CreateInstance(targetType, objects.Count);
                 for (var i = 0; i < objects.Count; i++)
                 {
                     var attempt = objects[i].TryConvertTo(targetType);
                     if (attempt.Success)
+                    {
                         result.SetValue(attempt.Result, i);
+                    }
                 }
 
                 return result;
