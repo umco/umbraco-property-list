@@ -95,6 +95,16 @@ namespace Our.Umbraco.PropertyList.ValueConverters
                     {
                         result.SetValue(attempt.Result, i);
                     }
+                    else
+                    {
+                        // NOTE: At this point `TryConvertTo` can't convert to the `targetType`.
+                        // This may be a case where the `targetType` is an interface.
+                        // We can attempt to cast it directly, as a last resort.
+                        if (targetType.IsInstanceOfType(objects[i]))
+                        {
+                            result.SetValue(objects[i], i);
+                        }
+                    }
                 }
 
                 return result;
