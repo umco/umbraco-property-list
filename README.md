@@ -6,6 +6,8 @@
 
 Property List is a property editor for making repeatable lists of a datatype for Umbraco 7.6+
 
+![Property List Editor](docs/img/screenshots/property-list-property-editor-02.png)
+
 ## Getting Started
 
 ### Installation
@@ -40,6 +42,11 @@ To clone it locally click the "Clone in Windows" button above or run the followi
 	cd umbraco-property-list
 	.\build.cmd
 
+
+### Documentation
+
+For details on how to use the Property List package, please refer to our [Developers Guide](docs/developers-guide.md) documentation.
+
 ---
 
 ## Known Issues
@@ -69,6 +76,10 @@ Have a question?
 
 * [Lee Kelleher](https://github.com/leekelleher)
 * [Matt Brailsford](https://github.com/mattbrailsford)
+
+If you enjoy using Property List on your commercial Umbraco projects, please do consider supporting our work on other open-source Umbraco packages.
+
+<a href="https://www.patreon.com/bePatron?u=4312563"><img src="http://weareumco.com/img/umco_patreon.png?v=1" alt="Become a UMCO Patron!" height="60" /></a>
 
 ## License
 
